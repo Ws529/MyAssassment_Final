@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Guru - My Assessment K13</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a8a93 0%, #24b0ba 50%, #1a8a93 100%);
+            padding: 15px;
+        }
+
+        /* Card - High Contrast */
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 35px 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Header */
+        .login-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .login-logo {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 12px;
+        }
+
+        .login-header h1 {
+            color: #24b0ba;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .login-header p {
+            color: #666;
+            font-size: 13px;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper .icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 15px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #333;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-input::placeholder {
+            color: #999;
+        }
+
+        .form-input:focus {
+            border-color: #24b0ba;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(36, 176, 186, 0.1);
+        }
+
+        /* Remember & Forgot */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 15px;
+            height: 15px;
+            accent-color: #24b0ba;
+        }
+
+        .forgot-link {
+            color: #24b0ba;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Button */
+        .btn-login {
+            width: 100%;
+            padding: 13px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            background: linear-gradient(135deg, #24b0ba, #1a8a93);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-login:hover {
+            background: linear-gradient(135deg, #1a8a93, #24b0ba);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(36, 176, 186, 0.4);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .btn-login.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: #999;
+            font-size: 12px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e9ecef;
+        }
+
+        .divider span {
+            padding: 0 12px;
+        }
+
+        /* Register Link */
+        .register-link {
+            text-align: center;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .register-link a {
+            color: #24b0ba;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Message */
+        .message {
+            padding: 10px 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            display: none;
+        }
+
+        .message.error {
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c00;
+            display: block;
+        }
+
+        .message.success {
+            background: #efe;
+            border: 1px solid #cfc;
+            color: #060;
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-height: 600px) {
+            .glass-card {
+                padding: 28px 25px;
+            }
+            .login-header {
+                margin-bottom: 20px;
+            }
+            .login-logo {
+                width: 50px;
+                height: 50px;
+            }
+            .login-header h1 {
+                font-size: 22px;
+            }
+            .form-group {
+                margin-bottom: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="glass-card">
+            <div class="login-header">
+                <img src="assets/img/logo.png" alt="MyAssessment" class="login-logo">
+                <h1>MyAssessment</h1>
+                <p>Sistem Penilaian Kurikulum 2013</p>
+            </div>
+
+            <div class="message" id="message"></div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <div class="input-wrapper">
+                        <span class="icon">📧</span>
+                        <input type="email" class="form-input" id="email" placeholder="Masukkan email" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrapper">
+                        <span class="icon">🔒</span>
+                        <input type="password" class="form-input" id="password" placeholder="Masukkan password" required>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" id="remember">
+                        <span>Ingat saya</span>
+                    </label>
+                    <a href="#" class="forgot-link">Lupa password?</a>
+                </div>
+
+                <button type="submit" class="btn-login" id="btnLogin">
+                    🚀 Masuk
+                </button>
+            </form>
+
+            <div class="divider"><span>atau</span></div>
+
+            <p class="register-link">
+                Belum punya akun? <a href="register.html">Daftar Sekarang</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api/auth';
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('btnLogin');
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+
+            if (!email || !password) {
+                showMessage('Email dan password harus diisi!', 'error');
+                return;
+            }
+
+            btn.classList.add('loading');
+            btn.innerHTML = '🔄 Memproses...';
+
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showMessage('Login berhasil! Mengalihkan...', 'success');
+                    
+                    const sessionData = {
+                        user: result.user,
+                        loginTime: new Date().toISOString(),
+                        remember: remember
+                    };
+                    
+                    if (remember) {
+                        localStorage.setItem('userSession', JSON.stringify(sessionData));
+                    } else {
+                        sessionStorage.setItem('userSession', JSON.stringify(sessionData));
+                    }
+
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                } else {
+                    showMessage(result.message, 'error');
+                    btn.classList.remove('loading');
+                    btn.innerHTML = '🚀 Masuk';
+                }
+            } catch (error) {
+                showMessage('Gagal terhubung ke server!', 'error');
+                btn.classList.remove('loading');
+                btn.innerHTML = '🚀 Masuk';
+            }
+        }
+
+        function showMessage(text, type) {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = 'message ' + type;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const session = localStorage.getItem('userSession') || sessionStorage.getItem('userSession');
+            if (session) {
+                const data = JSON.parse(session);
+                if (data.user) {
+                    window.location.href = 'index.html';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

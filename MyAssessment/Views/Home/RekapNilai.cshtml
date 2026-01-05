@@ -1,0 +1,240 @@
+@{
+    ViewData["Title"] = "Rekap Nilai";
+}
+
+@section Styles {
+<style>
+    .predikat-badge {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    .predikat-a { background: rgba(0, 212, 170, 0.2); color: var(--neon-cyan); }
+    .predikat-b { background: rgba(0, 188, 212, 0.2); color: var(--neon-blue); }
+    .predikat-c { background: rgba(255, 159, 67, 0.2); color: var(--neon-orange); }
+    .predikat-d { background: rgba(255, 71, 87, 0.2); color: var(--neon-red); }
+</style>
+}
+
+<div class="top-header">
+    <div class="page-title">
+        <h1>📊 Rekap Nilai</h1>
+        <p>Rekapitulasi nilai siswa per kelas dan mata pelajaran</p>
+    </div>
+</div>
+
+<div class="content-area">
+    <div class="filter-bar">
+        <div class="filter-group">
+            <label>Kelas</label>
+            <select class="filter-select" id="filterKelas" onchange="loadRekap()">
+                <option value="">📚 Pilih Kelas</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Mata Pelajaran</label>
+            <select class="filter-select" id="filterMapel" onchange="loadRekap()">
+                <option value="">📖 Pilih Mapel</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>&nbsp;</label>
+            <button class="btn-neon-cyan" onclick="exportCSV()">📥 Export CSV</button>
+        </div>
+    </div>
+
+    <div class="stats-grid" id="statsRow" style="display: none;">
+        <div class="stat-card">
+            <div class="stat-icon blue">👥</div>
+            <div class="stat-info">
+                <h3 id="statTotal">0</h3>
+                <p>Total Siswa</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon green">📈</div>
+            <div class="stat-info">
+                <h3 id="statAvg">0</h3>
+                <p>Rata-rata</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon orange">✅</div>
+            <div class="stat-info">
+                <h3 id="statPass">0</h3>
+                <p>Tuntas</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon purple">❌</div>
+            <div class="stat-info">
+                <h3 id="statFail">0</h3>
+                <p>Belum Tuntas</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card">
+        <div class="card-header">
+            <h3>📋 Rekap Nilai</h3>
+            <span class="total-badge" id="totalCount">0 Siswa</span>
+        </div>
+        <div class="card-body" style="padding: 0;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>NIS</th>
+                        <th>Nama</th>
+                        <th>KI-3</th>
+                        <th>KI-4</th>
+                        <th>Rata-rata</th>
+                        <th>Predikat</th>
+                    </tr>
+                </thead>
+                <tbody id="rekapTable">
+                    <tr>
+                        <td colspan="7" style="text-align:center;padding:60px;">
+                            <div style="font-size: 48px; margin-bottom: 16px;">📊</div>
+                            <p style="color: var(--text-muted);">Pilih kelas dan mata pelajaran untuk melihat rekap nilai</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let rekapData = [];
+
+    document.addEventListener('DOMContentLoaded', loadFilters);
+
+    async function loadFilters() {
+        try {
+            const [kelasRes, mapelRes] = await Promise.all([
+                fetch(`${API_URL}/kelas`), 
+                fetch(`${API_URL}/mapel`)
+            ]);
+            
+            const kelasList = await kelasRes.json();
+            const mapelList = await mapelRes.json();
+            
+            // Sort kelas
+            kelasList.sort((a, b) => {
+                const nameA = a.Nama || a.nama;
+                const nameB = b.Nama || b.nama;
+                return nameA.localeCompare(nameB);
+            });
+            
+            kelasList.forEach(k => {
+                const nama = k.Nama || k.nama;
+                document.getElementById('filterKelas').innerHTML += `<option value="${nama}">${nama}</option>`;
+            });
+            
+            mapelList.forEach(m => {
+                const nama = m.Nama || m.nama;
+                document.getElementById('filterMapel').innerHTML += `<option value="${nama}">${nama}</option>`;
+            });
+        } catch (err) {
+            console.error('Error loading filters:', err);
+        }
+    }
+
+    async function loadRekap() {
+        const kelas = document.getElementById('filterKelas').value;
+        const mapel = document.getElementById('filterMapel').value;
+        
+        if (!kelas || !mapel) return;
+
+        try {
+            const [studentsRes, gradesRes] = await Promise.all([
+                fetch(`${API_URL}/siswa`),
+                fetch(`${API_URL}/nilai?mapel=${mapel}`)
+            ]);
+            
+            const allStudents = await studentsRes.json();
+            const students = allStudents.filter(s => (s.Kelas || s.kelas) === kelas);
+            const grades = await gradesRes.json();
+
+            let totalAvg = 0, passCount = 0;
+            
+            rekapData = students.map((s, i) => {
+                const studentId = s.id || s.Id;
+                const studentGrades = grades.filter(g => g.studentId === studentId);
+                const ki3 = studentGrades.filter(g => g.jenis === 'KI-3').map(g => g.nilai).filter(Boolean);
+                const ki4 = studentGrades.filter(g => g.jenis === 'KI-4').map(g => g.nilai).filter(Boolean);
+                
+                const avgKi3 = ki3.length ? (ki3.reduce((a, b) => a + b, 0) / ki3.length).toFixed(1) : '-';
+                const avgKi4 = ki4.length ? (ki4.reduce((a, b) => a + b, 0) / ki4.length).toFixed(1) : '-';
+                const avg = ((parseFloat(avgKi3) || 0) + (parseFloat(avgKi4) || 0)) / 2;
+                
+                totalAvg += avg;
+                if (avg >= 75) passCount++;
+                
+                const predikat = avg >= 90 ? 'A' : avg >= 80 ? 'B' : avg >= 75 ? 'C' : 'D';
+                
+                return { 
+                    no: i + 1, 
+                    nis: s.NIS || s.nis || '-', 
+                    nama: s.Nama || s.nama, 
+                    ki3: avgKi3, 
+                    ki4: avgKi4, 
+                    avg: avg.toFixed(1), 
+                    predikat 
+                };
+            });
+
+            const tbody = document.getElementById('rekapTable');
+            if (rekapData.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align:center;padding:60px;">
+                            <div style="font-size: 48px; margin-bottom: 16px;">📭</div>
+                            <p style="color: var(--text-muted);">Tidak ada data siswa di kelas ini</p>
+                        </td>
+                    </tr>`;
+            } else {
+                tbody.innerHTML = rekapData.map(r => `
+                    <tr>
+                        <td>${r.no}</td>
+                        <td><strong>${r.nis}</strong></td>
+                        <td>${r.nama}</td>
+                        <td style="color: var(--neon-cyan);">${r.ki3}</td>
+                        <td style="color: var(--neon-purple);">${r.ki4}</td>
+                        <td><strong style="color: var(--neon-cyan);">${r.avg}</strong></td>
+                        <td><span class="predikat-badge predikat-${r.predikat.toLowerCase()}">${r.predikat}</span></td>
+                    </tr>
+                `).join('');
+            }
+
+            document.getElementById('totalCount').textContent = `${students.length} Siswa`;
+            document.getElementById('statTotal').textContent = students.length;
+            document.getElementById('statAvg').textContent = students.length > 0 ? (totalAvg / students.length).toFixed(1) : '0';
+            document.getElementById('statPass').textContent = passCount;
+            document.getElementById('statFail').textContent = students.length - passCount;
+            document.getElementById('statsRow').style.display = 'grid';
+        } catch (err) {
+            console.error('Error loading rekap:', err);
+        }
+    }
+
+    function exportCSV() {
+        if (rekapData.length === 0) {
+            alert('Tidak ada data untuk di-export');
+            return;
+        }
+        
+        let csv = 'No,NIS,Nama,KI-3,KI-4,Rata-rata,Predikat\n';
+        rekapData.forEach(r => csv += `${r.no},${r.nis},"${r.nama}",${r.ki3},${r.ki4},${r.avg},${r.predikat}\n`);
+        
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `rekap_nilai_${document.getElementById('filterKelas').value}_${document.getElementById('filterMapel').value}.csv`;
+        a.click();
+    }
+</script>
+}

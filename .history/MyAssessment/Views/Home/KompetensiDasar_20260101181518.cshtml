@@ -1,0 +1,219 @@
+@{
+    ViewData["Title"] = "Kompetensi Dasar";
+}
+
+@section Styles {
+<style>
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: white; border-radius: 16px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
+    .modal-header { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+    .modal-close { background: none; border: none; font-size: 24px; cursor: pointer; }
+    .modal-body { padding: 20px; }
+    .action-btn { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; margin: 0 2px; }
+    .btn-edit { background: #ffc107; color: #333; }
+    .btn-delete { background: #dc3545; color: white; }
+    .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+    .badge-ki3 { background: #e3f2fd; color: #1976d2; }
+    .badge-ki4 { background: #f3e5f5; color: #7b1fa2; }
+</style>
+}
+
+<div class="top-header">
+    <div class="page-title">
+        <h1>📚 Kompetensi Dasar</h1>
+        <p>Kelola KD dan KKM per mata pelajaran</p>
+    </div>
+</div>
+
+<div class="content-area">
+    <div class="message" id="message"></div>
+
+    <div class="filter-bar">
+        <div class="filter-group">
+            <label>Mata Pelajaran</label>
+            <select class="filter-select" id="filterMapel" onchange="loadKD()">
+                <option value="">Semua Mapel</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Jenis KI</label>
+            <select class="filter-select" id="filterJenis" onchange="loadKD()">
+                <option value="">Semua</option>
+                <option value="KI-3">KI-3 (Pengetahuan)</option>
+                <option value="KI-4">KI-4 (Keterampilan)</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>&nbsp;</label>
+            <button class="btn btn-primary" onclick="openAddModal()">+ Tambah KD</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>📋 Daftar Kompetensi Dasar</h3>
+            <span id="totalCount">0 KD</span>
+        </div>
+        <div class="card-body" style="padding: 0; overflow-x: auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Kode</th>
+                        <th>Mata Pelajaran</th>
+                        <th>Jenis</th>
+                        <th>Deskripsi</th>
+                        <th>KKM</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="kdTable"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="kdModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="modalTitle">Tambah KD</h3>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="kdId">
+            <div class="form-group">
+                <label>Kode KD</label>
+                <input type="text" class="form-control" id="kode" placeholder="Contoh: 3.1">
+            </div>
+            <div class="form-group">
+                <label>Mata Pelajaran</label>
+                <select class="form-control" id="mapel"></select>
+            </div>
+            <div class="form-group">
+                <label>Jenis KI</label>
+                <select class="form-control" id="jenis">
+                    <option value="KI-3">KI-3 (Pengetahuan)</option>
+                    <option value="KI-4">KI-4 (Keterampilan)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Deskripsi</label>
+                <textarea class="form-control" id="deskripsi" rows="3" placeholder="Deskripsi kompetensi dasar"></textarea>
+            </div>
+            <div class="form-group">
+                <label>KKM</label>
+                <input type="number" class="form-control" id="kkm" value="75" min="0" max="100">
+            </div>
+            <button class="btn btn-primary" onclick="saveKD()" style="width: 100%;">💾 Simpan</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let kdList = [];
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadMapel();
+        loadKD();
+    });
+
+    async function loadMapel() {
+        const res = await fetch(`${API_URL}/mapel`);
+        const data = await res.json();
+        const filterMapel = document.getElementById('filterMapel');
+        const mapelSelect = document.getElementById('mapel');
+        
+        data.forEach(m => {
+            filterMapel.innerHTML += `<option value="${m.nama}">${m.nama}</option>`;
+            mapelSelect.innerHTML += `<option value="${m.nama}">${m.nama}</option>`;
+        });
+    }
+
+    async function loadKD() {
+        const mapel = document.getElementById('filterMapel').value;
+        const jenis = document.getElementById('filterJenis').value;
+        
+        const res = await fetch(`${API_URL}/kompetensi`);
+        kdList = await res.json();
+        
+        if (mapel) kdList = kdList.filter(k => k.mapel === mapel);
+        if (jenis) kdList = kdList.filter(k => k.jenis === jenis);
+        
+        document.getElementById('totalCount').textContent = `${kdList.length} KD`;
+        document.getElementById('kdTable').innerHTML = kdList.map((k, i) => `
+            <tr>
+                <td>${i + 1}</td>
+                <td><strong>${k.kode}</strong></td>
+                <td>${k.mapel}</td>
+                <td><span class="badge ${k.jenis === 'KI-3' ? 'badge-ki3' : 'badge-ki4'}">${k.jenis}</span></td>
+                <td style="max-width: 300px;">${k.deskripsi}</td>
+                <td><strong>${k.kkm}</strong></td>
+                <td>
+                    <button class="action-btn btn-edit" onclick="editKD('${k.id}')">✏️</button>
+                    <button class="action-btn btn-delete" onclick="deleteKD('${k.id}')">🗑️</button>
+                </td>
+            </tr>
+        `).join('') || '<tr><td colspan="7" style="text-align:center;padding:40px;">Tidak ada data KD</td></tr>';
+    }
+
+    function openAddModal() {
+        document.getElementById('modalTitle').textContent = 'Tambah KD';
+        document.getElementById('kdId').value = '';
+        document.getElementById('kode').value = '';
+        document.getElementById('deskripsi').value = '';
+        document.getElementById('kkm').value = '75';
+        document.getElementById('kdModal').classList.add('active');
+    }
+
+    function editKD(id) {
+        const k = kdList.find(x => x.id === id);
+        document.getElementById('modalTitle').textContent = 'Edit KD';
+        document.getElementById('kdId').value = k.id;
+        document.getElementById('kode').value = k.kode;
+        document.getElementById('mapel').value = k.mapel;
+        document.getElementById('jenis').value = k.jenis;
+        document.getElementById('deskripsi').value = k.deskripsi;
+        document.getElementById('kkm').value = k.kkm;
+        document.getElementById('kdModal').classList.add('active');
+    }
+
+    function closeModal() { document.getElementById('kdModal').classList.remove('active'); }
+
+    async function saveKD() {
+        const id = document.getElementById('kdId').value;
+        const data = {
+            kode: document.getElementById('kode').value,
+            mapel: document.getElementById('mapel').value,
+            jenis: document.getElementById('jenis').value,
+            deskripsi: document.getElementById('deskripsi').value,
+            kkm: parseInt(document.getElementById('kkm').value),
+            kelas: 'X'
+        };
+
+        const url = id ? `${API_URL}/kompetensi/${id}` : `${API_URL}/kompetensi`;
+        const method = id ? 'PUT' : 'POST';
+
+        await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+        closeModal();
+        loadKD();
+        showMessage('KD berhasil disimpan!', 'success');
+    }
+
+    async function deleteKD(id) {
+        if (!confirm('Hapus KD ini?')) return;
+        await fetch(`${API_URL}/kompetensi/${id}`, { method: 'DELETE' });
+        loadKD();
+        showMessage('KD berhasil dihapus!', 'success');
+    }
+
+    function showMessage(text, type) {
+        const msg = document.getElementById('message');
+        msg.textContent = text;
+        msg.className = 'message ' + type;
+        setTimeout(() => msg.className = 'message', 3000);
+    }
+</script>
+}

@@ -1,0 +1,161 @@
+@{
+    ViewData["Title"] = "Cetak Rapor";
+}
+
+@section Styles {
+<style>
+    .rapor-preview { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto; }
+    .rapor-header { text-align: center; border-bottom: 3px double #333; padding-bottom: 20px; margin-bottom: 20px; }
+    .rapor-header h2 { font-size: 18px; margin-bottom: 5px; }
+    .rapor-header p { font-size: 12px; color: #666; }
+    .rapor-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; font-size: 13px; }
+    .rapor-info div { display: flex; }
+    .rapor-info span:first-child { width: 120px; }
+    .rapor-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 20px; }
+    .rapor-table th, .rapor-table td { border: 1px solid #333; padding: 8px; }
+    .rapor-table th { background: #f0f0f0; }
+    .rapor-signature { display: flex; justify-content: space-between; margin-top: 40px; text-align: center; font-size: 12px; }
+    .rapor-signature div { width: 200px; }
+    .rapor-signature .line { border-bottom: 1px solid #333; margin: 60px 0 5px; }
+</style>
+}
+
+<div class="top-header">
+    <div class="page-title">
+        <h1>📄 Cetak Rapor</h1>
+        <p>Generate dan cetak rapor siswa</p>
+    </div>
+</div>
+
+<div class="content-area">
+    <div class="filter-bar">
+        <div class="filter-group">
+            <label>Kelas</label>
+            <select class="filter-select" id="filterKelas" onchange="loadSiswa()">
+                <option value="">Pilih Kelas</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Siswa</label>
+            <select class="filter-select" id="filterSiswa" onchange="loadRapor()">
+                <option value="">Pilih Siswa</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>&nbsp;</label>
+            <button class="btn btn-primary" onclick="printRapor()">🖨️ Cetak PDF</button>
+        </div>
+    </div>
+
+    <div id="raporContainer" style="display: none;">
+        <div class="rapor-preview" id="raporPreview">
+            <div class="rapor-header">
+                <h2 id="schoolName">SMA NEGERI 1</h2>
+                <p id="schoolAddress">Alamat Sekolah</p>
+                <h3 style="margin-top: 15px;">LAPORAN HASIL BELAJAR SISWA</h3>
+            </div>
+            <div class="rapor-info">
+                <div><span>Nama</span>: <strong id="studentName">-</strong></div>
+                <div><span>Kelas</span>: <strong id="studentClass">-</strong></div>
+                <div><span>NIS</span>: <strong id="studentNIS">-</strong></div>
+                <div><span>Semester</span>: <strong id="semester">-</strong></div>
+            </div>
+            <table class="rapor-table">
+                <thead>
+                    <tr><th>No</th><th>Mata Pelajaran</th><th>KI-3</th><th>KI-4</th><th>Rata-rata</th><th>Predikat</th></tr>
+                </thead>
+                <tbody id="raporTable"></tbody>
+            </table>
+            <div class="rapor-signature">
+                <div>
+                    <p>Orang Tua/Wali</p>
+                    <div class="line"></div>
+                    <p>________________</p>
+                </div>
+                <div>
+                    <p id="cityDate">Bekasi, 1 Januari 2026</p>
+                    <p>Wali Kelas</p>
+                    <div class="line"></div>
+                    <p id="teacherName">________________</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+@section Scripts {
+<script>
+    let students = [], settings = {};
+
+    document.addEventListener('DOMContentLoaded', async function() {
+        const [kelasRes, settingsRes] = await Promise.all([
+            fetch(`${API_URL}/kelas`),
+            fetch(`${API_URL}/settings`)
+        ]);
+        
+        (await kelasRes.json()).forEach(k => 
+            document.getElementById('filterKelas').innerHTML += `<option value="${k.nama}">${k.nama}</option>`
+        );
+        
+        settings = await settingsRes.json();
+        document.getElementById('schoolName').textContent = settings.namaSekolah || 'SEKOLAH';
+        document.getElementById('schoolAddress').textContent = settings.alamatSekolah || '';
+        document.getElementById('teacherName').textContent = settings.teacherName || '';
+        document.getElementById('semester').textContent = settings.semester === '2' ? 'Genap' : 'Ganjil';
+        document.getElementById('cityDate').textContent = `${settings.kotaSekolah || 'Kota'}, ${new Date().toLocaleDateString('id-ID')}`;
+    });
+
+    async function loadSiswa() {
+        const kelas = document.getElementById('filterKelas').value;
+        const res = await fetch(`${API_URL}/siswa`);
+        students = (await res.json()).filter(s => s.kelas === kelas);
+        
+        const select = document.getElementById('filterSiswa');
+        select.innerHTML = '<option value="">Pilih Siswa</option>';
+        students.forEach(s => select.innerHTML += `<option value="${s.id}">${s.nama}</option>`);
+    }
+
+    async function loadRapor() {
+        const studentId = document.getElementById('filterSiswa').value;
+        if (!studentId) return;
+        
+        const student = students.find(s => s.id === studentId);
+        document.getElementById('studentName').textContent = student.nama;
+        document.getElementById('studentClass').textContent = student.kelas;
+        document.getElementById('studentNIS').textContent = student.nis || '-';
+
+        const [mapelRes, gradesRes] = await Promise.all([
+            fetch(`${API_URL}/mapel`),
+            fetch(`${API_URL}/nilai?studentId=${studentId}`)
+        ]);
+        
+        const mapelList = await mapelRes.json();
+        const grades = await gradesRes.json();
+
+        document.getElementById('raporTable').innerHTML = mapelList.map((m, i) => {
+            const ki3 = grades.filter(g => g.mapel === m.nama && g.jenis === 'KI-3').map(g => g.nilai).filter(Boolean);
+            const ki4 = grades.filter(g => g.mapel === m.nama && g.jenis === 'KI-4').map(g => g.nilai).filter(Boolean);
+            const avgKi3 = ki3.length ? Math.round(ki3.reduce((a, b) => a + b, 0) / ki3.length) : '-';
+            const avgKi4 = ki4.length ? Math.round(ki4.reduce((a, b) => a + b, 0) / ki4.length) : '-';
+            const avg = ((parseFloat(avgKi3) || 0) + (parseFloat(avgKi4) || 0)) / 2;
+            const predikat = avg >= 90 ? 'A' : avg >= 80 ? 'B' : avg >= 75 ? 'C' : 'D';
+            return `<tr><td>${i + 1}</td><td>${m.nama}</td><td>${avgKi3}</td><td>${avgKi4}</td><td>${avg.toFixed(0)}</td><td>${predikat}</td></tr>`;
+        }).join('');
+
+        document.getElementById('raporContainer').style.display = 'block';
+    }
+
+    async function printRapor() {
+        const { jsPDF } = window.jspdf;
+        const element = document.getElementById('raporPreview');
+        const canvas = await html2canvas(element, { scale: 2 });
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        pdf.addImage(imgData, 'PNG', 10, 10, 190, 0);
+        pdf.save(`Rapor_${document.getElementById('studentName').textContent}.pdf`);
+    }
+</script>
+}

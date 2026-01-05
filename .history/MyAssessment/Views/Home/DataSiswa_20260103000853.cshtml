@@ -1,0 +1,248 @@
+@{
+    ViewData["Title"] = "Data Siswa";
+}
+
+@section Styles {
+<style>
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: white; border-radius: 16px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+    .modal-header { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+    .modal-header h3 { font-size: 18px; font-weight: 600; }
+    .modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: #888; }
+    .modal-body { padding: 20px; }
+    .action-btn { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; margin: 0 2px; }
+    .btn-edit { background: #ffc107; color: #333; }
+    .btn-delete { background: #dc3545; color: white; }
+</style>
+}
+
+<div class="top-header">
+    <div class="page-title">
+        <h1>👥 Data Siswa</h1>
+        <p>Kelola data siswa per kelas</p>
+    </div>
+</div>
+
+<div class="content-area">
+    <div class="message" id="message"></div>
+
+    <div class="filter-bar">
+        <div class="filter-group">
+            <label>Filter Kelas</label>
+            <select class="filter-select" id="filterKelas" onchange="loadSiswa()">
+                <option value="">Semua Kelas</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>&nbsp;</label>
+            <button class="btn btn-primary" onclick="openAddModal()">+ Tambah Siswa</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>📋 Daftar Siswa</h3>
+            <span id="totalCount">0 siswa</span>
+        </div>
+        <div class="card-body" style="padding: 0;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>NIS</th>
+                        <th>Nama Lengkap</th>
+                        <th>Kelas</th>
+                        <th>Jenis Kelamin</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="siswaTable"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="siswaModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="modalTitle">Tambah Siswa</h3>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="siswaId">
+            <div class="form-group">
+                <label>NIS</label>
+                <input type="text" class="form-control" id="nis" placeholder="Nomor Induk Siswa">
+            </div>
+            <div class="form-group">
+                <label>Nama Lengkap</label>
+                <input type="text" class="form-control" id="nama" placeholder="Nama lengkap siswa">
+            </div>
+            <div class="form-group">
+                <label>Kelas</label>
+                <select class="form-control" id="kelas"></select>
+            </div>
+            <div class="form-group">
+                <label>Jenis Kelamin</label>
+                <select class="form-control" id="jenisKelamin">
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="saveSiswa()" style="width: 100%;">💾 Simpan</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let siswaList = [];
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadKelas();
+        loadSiswa();
+    });
+
+    async function loadKelas() {
+        const res = await fetch(`${API_URL}/kelas`);
+        const data = await res.json();
+        const filterKelas = document.getElementById('filterKelas');
+        const kelasSelect = document.getElementById('kelas');
+        
+        data.forEach(k => {
+            filterKelas.innerHTML += `<option value="${k.nama}">${k.nama}</option>`;
+            kelasSelect.innerHTML += `<option value="${k.nama}">${k.nama}</option>`;
+        });
+    }
+
+    async function loadSiswa() {
+        const kelas = document.getElementById('filterKelas').value;
+        const res = await fetch(`${API_URL}/siswa`);
+        const data = await res.json();
+        
+        // Support both array response and object with data property
+        siswaList = Array.isArray(data) ? data : (data.data || []);
+        
+        // Filter by kelas using PascalCase
+        if (kelas) siswaList = siswaList.filter(s => (s.Kelas || s.kelas) === kelas);
+        
+        document.getElementById('totalCount').textContent = `${siswaList.length} siswa`;
+        document.getElementById('siswaTable').innerHTML = siswaList.map((s, i) => {
+            // Support both PascalCase and camelCase from server
+            const id = s.id || s.Id;
+            const nis = s.NIS || s.nis || '-';
+            const nama = s.Nama || s.nama || '';
+            const kelasVal = s.Kelas || s.kelas || '';
+            const jk = s.JenisKelamin || s.jenisKelamin || '';
+            
+            return `
+            <tr>
+                <td>${i + 1}</td>
+                <td>${nis}</td>
+                <td>${nama}</td>
+                <td>${kelasVal}</td>
+                <td>${jk}</td>
+                <td>
+                    <button class="action-btn btn-edit" onclick="editSiswa('${id}')">✏️</button>
+                    <button class="action-btn btn-delete" onclick="deleteSiswa('${id}')">🗑️</button>
+                </td>
+            </tr>
+        `}).join('') || '<tr><td colspan="6" style="text-align:center;padding:40px;">Tidak ada data siswa</td></tr>';
+    }
+
+    function openAddModal() {
+        document.getElementById('modalTitle').textContent = 'Tambah Siswa';
+        document.getElementById('siswaId').value = '';
+        document.getElementById('nis').value = '';
+        document.getElementById('nama').value = '';
+        document.getElementById('siswaModal').classList.add('active');
+    }
+
+    function editSiswa(id) {
+        const s = siswaList.find(x => (x.id || x.Id) === id);
+        if (!s) {
+            showMessage('Data siswa tidak ditemukan', 'error');
+            return;
+        }
+        
+        // Support both PascalCase and camelCase
+        document.getElementById('modalTitle').textContent = 'Edit Siswa';
+        document.getElementById('siswaId').value = s.id || s.Id;
+        document.getElementById('nis').value = s.NIS || s.nis || '';
+        document.getElementById('nama').value = s.Nama || s.nama || '';
+        document.getElementById('kelas').value = s.Kelas || s.kelas || '';
+        document.getElementById('jenisKelamin').value = s.JenisKelamin || s.jenisKelamin || 'Laki-laki';
+        document.getElementById('siswaModal').classList.add('active');
+    }
+
+    function closeModal() { document.getElementById('siswaModal').classList.remove('active'); }
+
+    async function saveSiswa() {
+        const id = document.getElementById('siswaId').value;
+        
+        // Use PascalCase to match C# Model
+        const data = {
+            NIS: document.getElementById('nis').value,
+            Nama: document.getElementById('nama').value,
+            Kelas: document.getElementById('kelas').value,
+            JenisKelamin: document.getElementById('jenisKelamin').value
+        };
+
+        // Validation
+        if (!data.NIS || !data.Nama || !data.Kelas) {
+            showMessage('NIS, Nama, dan Kelas wajib diisi!', 'error');
+            return;
+        }
+
+        const url = id ? `${API_URL}/siswa/${id}` : `${API_URL}/siswa`;
+        const method = id ? 'PUT' : 'POST';
+
+        try {
+            const res = await fetch(url, { 
+                method, 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify(data) 
+            });
+            
+            const result = await res.json();
+            
+            if (res.ok) {
+                closeModal();
+                loadSiswa();
+                showMessage(result.message || 'Data siswa berhasil disimpan!', 'success');
+            } else {
+                showMessage(result.message || 'Gagal menyimpan data', 'error');
+            }
+        } catch (err) {
+            showMessage('Error: ' + err.message, 'error');
+        }
+    }
+
+    async function deleteSiswa(id) {
+        if (!confirm('Hapus siswa ini?')) return;
+        
+        try {
+            const res = await fetch(`${API_URL}/siswa/${id}`, { method: 'DELETE' });
+            const result = await res.json();
+            
+            if (res.ok) {
+                loadSiswa();
+                showMessage(result.message || 'Siswa berhasil dihapus!', 'success');
+            } else {
+                showMessage(result.message || 'Gagal menghapus siswa', 'error');
+            }
+        } catch (err) {
+            showMessage('Error: ' + err.message, 'error');
+        }
+    }
+
+    function showMessage(text, type) {
+        const msg = document.getElementById('message');
+        msg.textContent = text;
+        msg.className = 'message ' + type;
+        setTimeout(() => msg.className = 'message', 3000);
+    }
+</script>
+}

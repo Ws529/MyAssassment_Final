@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pengaturan - My Assessment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #f0f2f5; }
+        .app-container { display: flex; min-height: 100vh; }
+
+        /* Sidebar - Teal Theme */
+        .sidebar { width: 260px; background: linear-gradient(180deg, #1a5a5e 0%, #0d3d40 100%); color: white; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; }
+        .sidebar-header { padding: 25px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.1); }
+        .sidebar-header img { width: 45px; height: 45px; border-radius: 10px; }
+        .sidebar-header h2 { font-size: 20px; font-weight: 700; }
+        .sidebar-header span { font-size: 11px; opacity: 0.7; display: block; margin-top: 2px; }
+        .sidebar-menu { padding: 20px 0; }
+        .menu-label { padding: 12px 20px 8px; font-size: 11px; text-transform: uppercase; color: rgba(255,255,255,0.4); letter-spacing: 1.5px; font-weight: 600; }
+        .menu-item { display: flex; align-items: center; gap: 14px; padding: 14px 20px; color: rgba(255,255,255,0.75); text-decoration: none; transition: all 0.3s; border-left: 4px solid transparent; margin: 2px 0; }
+        .menu-item:hover { background: rgba(36, 176, 186, 0.15); color: white; border-left-color: rgba(36, 176, 186, 0.5); }
+        .menu-item.active { background: linear-gradient(90deg, rgba(36, 176, 186, 0.3) 0%, transparent 100%); border-left-color: #24b0ba; color: #24b0ba; }
+        .menu-item .icon { font-size: 20px; width: 28px; text-align: center; }
+        .sidebar-footer { position: absolute; bottom: 0; width: 100%; padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.1); }
+        .logout-btn { display: flex; align-items: center; gap: 12px; color: #ff7b7b; text-decoration: none; font-size: 14px; font-weight: 500; padding: 12px 15px; border-radius: 10px; }
+        .logout-btn:hover { background: rgba(255,107,107,0.15); }
+
+        /* Main Content */
+        .main-content { flex: 1; margin-left: 260px; min-height: 100vh; }
+        .top-header { background: linear-gradient(135deg, #24b0ba, #1a8a93); color: white; padding: 25px 30px; }
+        .page-title h1 { font-size: 24px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .page-title p { font-size: 13px; opacity: 0.9; margin-top: 5px; }
+        .content-area { padding: 25px 30px; }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 5px; margin-bottom: 20px; background: white; padding: 5px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        .tab-btn { padding: 12px 25px; border: none; background: transparent; font-size: 14px; font-weight: 500; cursor: pointer; border-radius: 8px; transition: all 0.3s; font-family: 'Poppins', sans-serif; color: #666; }
+        .tab-btn.active { background: #24b0ba; color: white; }
+        .tab-btn:hover:not(.active) { background: #f0f0f0; }
+
+        /* Cards */
+        .card { background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow: hidden; margin-bottom: 20px; }
+        .card-header { padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .card-header h3 { font-size: 16px; font-weight: 600; color: #333; }
+        .card-body { padding: 20px; }
+
+        /* Tab Content */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Form */
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 500; color: #555; margin-bottom: 6px; }
+        .form-control { width: 100%; padding: 10px 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; outline: none; font-family: 'Poppins', sans-serif; }
+        .form-control:focus { border-color: #24b0ba; }
+
+        /* List Items */
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border: 1px solid #eee; border-radius: 8px; margin-bottom: 10px; }
+        .list-item:hover { background: #f8fffe; border-color: #24b0ba; }
+        .list-item-text { font-size: 14px; font-weight: 500; }
+        .list-item-actions { display: flex; gap: 8px; }
+
+        /* Buttons */
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.3s; font-family: 'Poppins', sans-serif; }
+        .btn-primary { background: linear-gradient(135deg, #24b0ba, #1a8a93); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(36,176,186,0.4); }
+        .btn-success { background: #28a745; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+        /* Message */
+        .message { padding: 12px 15px; border-radius: 8px; margin-bottom: 15px; display: none; font-size: 14px; }
+        .message.success { background: #d4edda; color: #155724; display: block; }
+        .message.error { background: #f8d7da; color: #721c24; display: block; }
+
+        /* Add Form */
+        .add-form { display: flex; gap: 10px; margin-bottom: 20px; }
+        .add-form input { flex: 1; }
+
+        @media (max-width: 992px) {
+            .sidebar { width: 70px; }
+            .sidebar-header h2, .sidebar-header span, .menu-label, .menu-item span { display: none; }
+            .main-content { margin-left: 70px; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; }
+            .tabs { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="assets/img/logo.png" alt="Logo">
+                <div><h2>MyAssessment</h2><span>Sistem Penilaian K13</span></div>
+            </div>
+            <nav class="sidebar-menu">
+                <div class="menu-label">Menu Utama</div>
+                <a href="index.html" class="menu-item"><span class="icon">🏠</span><span>Dashboard</span></a>
+                <a href="siswa.html" class="menu-item"><span class="icon">👥</span><span>Data Siswa</span></a>
+                <a href="kompetensi.html" class="menu-item"><span class="icon">📚</span><span>Kompetensi Dasar</span></a>
+                <a href="penilaian.html" class="menu-item"><span class="icon">📝</span><span>Input Penilaian</span></a>
+                <div class="menu-label">Laporan</div>
+                <a href="penilaian.html" class="menu-item"><span class="icon">📊</span><span>Rekap Nilai</span></a>
+                <a href="penilaian.html" class="menu-item"><span class="icon">📄</span><span>Cetak Rapor</span></a>
+                <div class="menu-label">Pengaturan</div>
+                <a href="pengaturan.html" class="menu-item active"><span class="icon">⚙️</span><span>Pengaturan</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="login.html" class="logout-btn" onclick="logout()"><span>🚪</span><span>Logout</span></a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-header">
+                <div class="page-title">
+                    <h1>⚙️ Pengaturan</h1>
+                    <p>Konfigurasi data sekolah, kelas, dan mata pelajaran</p>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <div class="message" id="message"></div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="showTab('sekolah')">🏫 Data Sekolah</button>
+                    <button class="tab-btn" onclick="showTab('kelas')">🎓 Kelas</button>
+                    <button class="tab-btn" onclick="showTab('mapel')">📖 Mata Pelajaran</button>
+                </div>
+
+                <!-- Tab: Sekolah -->
+                <div class="tab-content active" id="tab-sekolah">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>🏫 Informasi Sekolah</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Nama Sekolah</label>
+                                    <input type="text" class="form-control" id="namaSekolah" placeholder="Masukkan nama sekolah">
+                                </div>
+                                <div class="form-group">
+                                    <label>NPSN</label>
+                                    <input type="text" class="form-control" id="npsn" placeholder="Masukkan NPSN">
+                                </div>
+                                <div class="form-group">
+                                    <label>Alamat</label>
+                                    <input type="text" class="form-control" id="alamatSekolah" placeholder="Masukkan alamat">
+                                </div>
+                                <div class="form-group">
+                                    <label>Kepala Sekolah</label>
+                                    <input type="text" class="form-control" id="kepalaSekolah" placeholder="Nama kepala sekolah">
+                                </div>
+                                <div class="form-group">
+                                    <label>Tahun Ajaran</label>
+                                    <input type="text" class="form-control" id="tahunAjaran" placeholder="2025/2026">
+                                </div>
+                                <div class="form-group">
+                                    <label>Semester</label>
+                                    <select class="form-control" id="semester">
+                                        <option value="1">Semester 1 (Ganjil)</option>
+                                        <option value="2">Semester 2 (Genap)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="margin-top: 20px;">
+                                <button class="btn btn-primary" onclick="saveSekolah()">💾 Simpan Pengaturan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Kelas -->
+                <div class="tab-content" id="tab-kelas">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>🎓 Daftar Kelas</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="add-form">
+                                <input type="text" class="form-control" id="newKelas" placeholder="Nama kelas baru (contoh: X IPA 1)">
+                                <button class="btn btn-primary" onclick="addKelas()">+ Tambah</button>
+                            </div>
+                            <div id="kelasList"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Mapel -->
+                <div class="tab-content" id="tab-mapel">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>📖 Daftar Mata Pelajaran</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="add-form">
+                                <input type="text" class="form-control" id="newMapel" placeholder="Nama mata pelajaran baru">
+                                <button class="btn btn-primary" onclick="addMapel()">+ Tambah</button>
+                            </div>
+                            <div id="mapelList"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSekolah();
+            loadKelas();
+            loadMapel();
+        });
+
+        function showTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(`tab-${tab}`).classList.add('active');
+        }
+
+        // Sekolah
+        async function loadSekolah() {
+            try {
+                const res = await fetch(`${API_URL}/settings`);
+                const data = await res.json();
+                if (data) {
+                    document.getElementById('namaSekolah').value = data.namaSekolah || '';
+                    document.getElementById('npsn').value = data.npsn || '';
+                    document.getElementById('alamatSekolah').value = data.alamatSekolah || '';
+                    document.getElementById('kepalaSekolah').value = data.kepalaSekolah || '';
+                    document.getElementById('tahunAjaran').value = data.tahunAjaran || '';
+                    document.getElementById('semester').value = data.semester || '1';
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        async function saveSekolah() {
+            const data = {
+                namaSekolah: document.getElementById('namaSekolah').value,
+                npsn: document.getElementById('npsn').value,
+                alamatSekolah: document.getElementById('alamatSekolah').value,
+                kepalaSekolah: document.getElementById('kepalaSekolah').value,
+                tahunAjaran: document.getElementById('tahunAjaran').value,
+                semester: document.getElementById('semester').value
+            };
+            try {
+                await fetch(`${API_URL}/settings`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                showMessage('Pengaturan berhasil disimpan!', 'success');
+            } catch (err) { showMessage('Gagal menyimpan', 'error'); }
+        }
+
+        // Kelas
+        async function loadKelas() {
+            try {
+                const res = await fetch(`${API_URL}/kelas`);
+                const list = await res.json();
+                const container = document.getElementById('kelasList');
+                container.innerHTML = list.map(k => `
+                    <div class="list-item">
+                        <span class="list-item-text">🎓 ${k.nama}</span>
+                        <div class="list-item-actions">
+                            <button class="btn btn-sm btn-danger" onclick="deleteKelas('${k.id}')">🗑️ Hapus</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) { console.error(err); }
+        }
+
+        async function addKelas() {
+            const nama = document.getElementById('newKelas').value.trim();
+            if (!nama) return showMessage('Masukkan nama kelas!', 'error');
+            try {
+                await fetch(`${API_URL}/kelas`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nama })
+                });
+                document.getElementById('newKelas').value = '';
+                loadKelas();
+                showMessage('Kelas berhasil ditambahkan!', 'success');
+            } catch (err) { showMessage('Gagal menambah kelas', 'error'); }
+        }
+
+        async function deleteKelas(id) {
+            if (confirm('Yakin ingin menghapus kelas ini?')) {
+                try {
+                    await fetch(`${API_URL}/kelas/${id}`, { method: 'DELETE' });
+                    loadKelas();
+                    showMessage('Kelas berhasil dihapus!', 'success');
+                } catch (err) { showMessage('Gagal menghapus', 'error'); }
+            }
+        }
+
+        // Mapel
+        async function loadMapel() {
+            try {
+                const res = await fetch(`${API_URL}/mapel`);
+                const list = await res.json();
+                const container = document.getElementById('mapelList');
+                container.innerHTML = list.map(m => `
+                    <div class="list-item">
+                        <span class="list-item-text">📖 ${m.nama}</span>
+                        <div class="list-item-actions">
+                            <button class="btn btn-sm btn-danger" onclick="deleteMapel('${m.id}')">🗑️ Hapus</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) { console.error(err); }
+        }
+
+        async function addMapel() {
+            const nama = document.getElementById('newMapel').value.trim();
+            if (!nama) return showMessage('Masukkan nama mata pelajaran!', 'error');
+            try {
+                await fetch(`${API_URL}/mapel`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nama })
+                });
+                document.getElementById('newMapel').value = '';
+                loadMapel();
+                showMessage('Mata pelajaran berhasil ditambahkan!', 'success');
+            } catch (err) { showMessage('Gagal menambah mapel', 'error'); }
+        }
+
+        async function deleteMapel(id) {
+            if (confirm('Yakin ingin menghapus mata pelajaran ini?')) {
+                try {
+                    await fetch(`${API_URL}/mapel/${id}`, { method: 'DELETE' });
+                    loadMapel();
+                    showMessage('Mata pelajaran berhasil dihapus!', 'success');
+                } catch (err) { showMessage('Gagal menghapus', 'error'); }
+            }
+        }
+
+        function showMessage(text, type) {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = 'message ' + type;
+            setTimeout(() => msg.className = 'message', 3000);
+        }
+
+        function logout() {
+            localStorage.removeItem('userSession');
+            sessionStorage.removeItem('userSession');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pengaturan - My Assessment K13</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); min-height: 100vh; }
+        .app-container { display: flex; min-height: 100vh; }
+
+        /* Sidebar - Deep Ocean Drive Theme */
+        .sidebar { width: 260px; background: linear-gradient(180deg, #24b0ba 0%, #156d73 60%, #0d2c2e 100%); color: #e2e8f0; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; border-right: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3); }
+        .sidebar-header { padding: 25px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.1); }
+        .sidebar-header img { width: 45px; height: 45px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .sidebar-header h2 { font-size: 20px; font-weight: 700; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .sidebar-header span { font-size: 11px; color: rgba(255,255,255,0.8); display: block; margin-top: 2px; }
+        .sidebar-menu { padding: 20px 0; }
+        .menu-label { padding: 15px 20px 8px; font-size: 10px; text-transform: uppercase; color: rgba(255,255,255,0.5); letter-spacing: 2px; font-weight: 600; }
+        .menu-item { display: flex; align-items: center; gap: 14px; padding: 14px 20px; color: #e2e8f0; text-decoration: none; transition: all 0.3s ease; border-left: 4px solid transparent; margin: 2px 8px 2px 0; border-radius: 0 25px 25px 0; }
+        .menu-item:hover { background: rgba(255, 255, 255, 0.1); color: #ffffff; border-left-color: rgba(255, 255, 255, 0.5); }
+        .menu-item.active { background: rgba(255, 255, 255, 0.15); border-left-color: #ffffff; color: #ffffff; text-shadow: 0 0 10px #ffffff, 0 0 20px rgba(255,255,255,0.5); box-shadow: inset 0 0 20px rgba(255,255,255,0.1); }
+        .menu-item .icon { font-size: 20px; width: 28px; text-align: center; }
+        .sidebar-footer { position: absolute; bottom: 0; width: 100%; padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); }
+        .logout-btn { display: flex; align-items: center; gap: 12px; color: #fca5a5; text-decoration: none; font-size: 14px; font-weight: 500; padding: 12px 15px; border-radius: 10px; transition: all 0.3s ease; }
+        .logout-btn:hover { background: rgba(255,100,100,0.2); color: #ff8a8a; text-shadow: 0 0 10px rgba(255,100,100,0.5); }
+
+        /* Main Content */
+        .main-content { flex: 1; margin-left: 260px; min-height: 100vh; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
+        .top-header { background: linear-gradient(135deg, #24b0ba 0%, #1a8a93 100%); color: white; padding: 30px; }
+        .page-title h1 { font-size: 26px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+        .page-title p { font-size: 13px; opacity: 0.9; margin-top: 5px; }
+        .content-area { padding: 30px; }
+</style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="assets/img/logo.png" alt="Logo">
+                <div><h2>MyAssessment</h2><span>Sistem Penilaian K13</span></div>
+            </div>

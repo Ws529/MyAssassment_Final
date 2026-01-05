@@ -1,0 +1,122 @@
+@{
+    ViewData["Title"] = "Rekap Nilai";
+}
+
+<div class="top-header">
+    <div class="page-title">
+        <h1>📊 Rekap Nilai</h1>
+        <p>Rekapitulasi nilai siswa per kelas dan mata pelajaran</p>
+    </div>
+</div>
+
+<div class="content-area">
+    <div class="filter-bar">
+        <div class="filter-group">
+            <label>Kelas</label>
+            <select class="filter-select" id="filterKelas" onchange="loadRekap()">
+                <option value="">Pilih Kelas</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Mata Pelajaran</label>
+            <select class="filter-select" id="filterMapel" onchange="loadRekap()">
+                <option value="">Pilih Mapel</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>&nbsp;</label>
+            <button class="btn btn-primary" onclick="exportCSV()">📥 Export CSV</button>
+        </div>
+    </div>
+
+    <div class="stats-grid" id="statsRow" style="display: none;">
+        <div class="stat-card"><div class="stat-icon blue">👥</div><div class="stat-info"><h3 id="statTotal">0</h3><p>Total Siswa</p></div></div>
+        <div class="stat-card"><div class="stat-icon green">📈</div><div class="stat-info"><h3 id="statAvg">0</h3><p>Rata-rata</p></div></div>
+        <div class="stat-card"><div class="stat-icon orange">✅</div><div class="stat-info"><h3 id="statPass">0</h3><p>Tuntas</p></div></div>
+        <div class="stat-card"><div class="stat-icon purple">❌</div><div class="stat-info"><h3 id="statFail">0</h3><p>Belum Tuntas</p></div></div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>📋 Rekap Nilai</h3>
+        </div>
+        <div class="card-body" style="padding: 0;">
+            <table class="data-table">
+                <thead>
+                    <tr><th>No</th><th>NIS</th><th>Nama</th><th>KI-3</th><th>KI-4</th><th>Rata-rata</th><th>Predikat</th></tr>
+                </thead>
+                <tbody id="rekapTable">
+                    <tr><td colspan="7" style="text-align:center;padding:40px;">Pilih kelas dan mapel</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let rekapData = [];
+
+    document.addEventListener('DOMContentLoaded', loadFilters);
+
+    async function loadFilters() {
+        const [kelasRes, mapelRes] = await Promise.all([fetch(`${API_URL}/kelas`), fetch(`${API_URL}/mapel`)]);
+        const kelasList = await kelasRes.json();
+        const mapelList = await mapelRes.json();
+        
+        kelasList.forEach(k => document.getElementById('filterKelas').innerHTML += `<option value="${k.nama}">${k.nama}</option>`);
+        mapelList.forEach(m => document.getElementById('filterMapel').innerHTML += `<option value="${m.nama}">${m.nama}</option>`);
+    }
+
+    async function loadRekap() {
+        const kelas = document.getElementById('filterKelas').value;
+        const mapel = document.getElementById('filterMapel').value;
+        
+        if (!kelas || !mapel) return;
+
+        const [studentsRes, gradesRes] = await Promise.all([
+            fetch(`${API_URL}/siswa`),
+            fetch(`${API_URL}/nilai?mapel=${mapel}`)
+        ]);
+        
+        const students = (await studentsRes.json()).filter(s => s.kelas === kelas);
+        const grades = await gradesRes.json();
+
+        let totalAvg = 0, passCount = 0;
+        rekapData = students.map((s, i) => {
+            const studentGrades = grades.filter(g => g.studentId === s.id);
+            const ki3 = studentGrades.filter(g => g.jenis === 'KI-3').map(g => g.nilai).filter(Boolean);
+            const ki4 = studentGrades.filter(g => g.jenis === 'KI-4').map(g => g.nilai).filter(Boolean);
+            
+            const avgKi3 = ki3.length ? (ki3.reduce((a, b) => a + b, 0) / ki3.length).toFixed(1) : '-';
+            const avgKi4 = ki4.length ? (ki4.reduce((a, b) => a + b, 0) / ki4.length).toFixed(1) : '-';
+            const avg = (parseFloat(avgKi3) || 0 + parseFloat(avgKi4) || 0) / 2;
+            
+            totalAvg += avg;
+            if (avg >= 75) passCount++;
+            
+            return { no: i + 1, nis: s.nis, nama: s.nama, ki3: avgKi3, ki4: avgKi4, avg: avg.toFixed(1), predikat: avg >= 90 ? 'A' : avg >= 80 ? 'B' : avg >= 75 ? 'C' : 'D' };
+        });
+
+        document.getElementById('rekapTable').innerHTML = rekapData.map(r => 
+            `<tr><td>${r.no}</td><td>${r.nis || '-'}</td><td>${r.nama}</td><td>${r.ki3}</td><td>${r.ki4}</td><td><strong>${r.avg}</strong></td><td>${r.predikat}</td></tr>`
+        ).join('') || '<tr><td colspan="7">Tidak ada data</td></tr>';
+
+        document.getElementById('statTotal').textContent = students.length;
+        document.getElementById('statAvg').textContent = (totalAvg / students.length).toFixed(1);
+        document.getElementById('statPass').textContent = passCount;
+        document.getElementById('statFail').textContent = students.length - passCount;
+        document.getElementById('statsRow').style.display = 'grid';
+    }
+
+    function exportCSV() {
+        let csv = 'No,NIS,Nama,KI-3,KI-4,Rata-rata,Predikat\n';
+        rekapData.forEach(r => csv += `${r.no},${r.nis},${r.nama},${r.ki3},${r.ki4},${r.avg},${r.predikat}\n`);
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'rekap_nilai.csv';
+        a.click();
+    }
+</script>
+}

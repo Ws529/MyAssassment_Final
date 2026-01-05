@@ -1,0 +1,397 @@
+@{
+    ViewData["Title"] = "Cetak Rapor";
+}
+
+@section Styles {
+<style>
+    /* Rapor Preview Glassmorphism Frame */
+    .rapor-frame {
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-blur);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 60px rgba(0, 212, 170, 0.1);
+        max-width: 850px;
+        margin: 0 auto;
+    }
+    
+    .rapor-preview {
+        background: #fff;
+        padding: 50px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        color: #333;
+    }
+    
+    .rapor-header {
+        text-align: center;
+        border-bottom: 3px double #333;
+        padding-bottom: 20px;
+        margin-bottom: 25px;
+    }
+    
+    .rapor-header img {
+        width: 70px;
+        margin-bottom: 10px;
+    }
+    
+    .rapor-header h2 {
+        font-size: 20px;
+        margin: 0 0 5px 0;
+        color: #1a1a2e;
+    }
+    
+    .rapor-header p {
+        font-size: 12px;
+        color: #666;
+        margin: 0;
+    }
+    
+    .rapor-header h3 {
+        margin-top: 20px;
+        font-size: 16px;
+        color: #1a1a2e;
+        letter-spacing: 2px;
+    }
+    
+    .rapor-info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 25px;
+        font-size: 13px;
+    }
+    
+    .rapor-info div {
+        display: flex;
+    }
+    
+    .rapor-info span:first-child {
+        width: 130px;
+        color: #666;
+    }
+    
+    .rapor-info strong {
+        color: #1a1a2e;
+    }
+    
+    .rapor-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+        margin-bottom: 25px;
+    }
+    
+    .rapor-table th, .rapor-table td {
+        border: 1px solid #333;
+        padding: 10px 8px;
+        text-align: center;
+    }
+    
+    .rapor-table th {
+        background: #f5f5f5;
+        font-weight: 600;
+        color: #1a1a2e;
+    }
+    
+    .rapor-table td:nth-child(2) {
+        text-align: left;
+    }
+    
+    .rapor-signature {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 50px;
+        text-align: center;
+        font-size: 12px;
+    }
+    
+    .rapor-signature > div {
+        width: 200px;
+    }
+    
+    .rapor-signature .line {
+        border-bottom: 1px solid #333;
+        margin: 70px 0 8px;
+    }
+    
+    .rapor-signature p {
+        margin: 0;
+        color: #333;
+    }
+    
+    /* Premium Badge */
+    .premium-badge {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue));
+        color: var(--primary-dark);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        box-shadow: 0 4px 15px var(--neon-cyan-glow);
+    }
+</style>
+}
+
+<div class="top-header">
+    <div class="page-title">
+        <h1>📄 Cetak Rapor</h1>
+        <p>Generate dan cetak rapor siswa</p>
+    </div>
+</div>
+
+<div class="content-area">
+    <div class="filter-bar">
+        <div class="filter-group">
+            <label>Kelas</label>
+            <select class="filter-select" id="filterKelas" onchange="loadSiswa()">
+                <option value="">📚 Pilih Kelas</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Siswa</label>
+            <select class="filter-select" id="filterSiswa" onchange="loadRapor()">
+                <option value="">👤 Pilih Siswa</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>&nbsp;</label>
+            <button class="btn-neon-cyan" onclick="printRapor()">🖨️ Cetak PDF</button>
+        </div>
+    </div>
+
+    <div id="raporContainer" style="display: none;">
+        <div class="rapor-frame" style="position: relative;">
+            <span class="premium-badge">✨ Premium K13</span>
+            <div class="rapor-preview" id="raporPreview">
+                <div class="rapor-header">
+                    <h2 id="schoolName">SMA NEGERI 1</h2>
+                    <p id="schoolAddress">Alamat Sekolah</p>
+                    <h3>LAPORAN HASIL BELAJAR SISWA</h3>
+                    <p style="margin-top: 5px;">Tahun Pelajaran <span id="tahunAjaran">2025/2026</span></p>
+                </div>
+                
+                <div class="rapor-info">
+                    <div><span>Nama Peserta Didik</span>: <strong id="studentName">-</strong></div>
+                    <div><span>Kelas</span>: <strong id="studentClass">-</strong></div>
+                    <div><span>NIS / NISN</span>: <strong id="studentNIS">-</strong></div>
+                    <div><span>Semester</span>: <strong id="semester">-</strong></div>
+                </div>
+                
+                <table class="rapor-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;">No</th>
+                            <th>Mata Pelajaran</th>
+                            <th style="width: 60px;">KI-3</th>
+                            <th style="width: 60px;">KI-4</th>
+                            <th style="width: 70px;">Rata-rata</th>
+                            <th style="width: 60px;">Predikat</th>
+                        </tr>
+                    </thead>
+                    <tbody id="raporTable"></tbody>
+                </table>
+                
+                <div class="rapor-signature">
+                    <div>
+                        <p>Mengetahui,</p>
+                        <p>Orang Tua/Wali</p>
+                        <div class="line"></div>
+                        <p>________________________</p>
+                    </div>
+                    <div>
+                        <p id="cityDate">Bekasi, 1 Januari 2026</p>
+                        <p>Wali Kelas</p>
+                        <div class="line"></div>
+                        <p id="teacherName">________________________</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Empty State -->
+    <div id="emptyState" class="glass-card" style="text-align: center; padding: 80px 40px;">
+        <div style="font-size: 64px; margin-bottom: 20px;">📄</div>
+        <h3 style="color: var(--text-primary); margin-bottom: 10px;">Pilih Siswa untuk Generate Rapor</h3>
+        <p style="color: var(--text-muted);">Pilih kelas dan siswa dari dropdown di atas untuk melihat preview rapor</p>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+@section Scripts {
+<script>
+    let students = [], settings = {};
+
+    document.addEventListener('DOMContentLoaded', async function() {
+        try {
+            const [kelasRes, settingsRes] = await Promise.all([
+                fetch(`${API_URL}/kelas`),
+                fetch(`${API_URL}/settings`)
+            ]);
+            
+            const kelasList = await kelasRes.json();
+            
+            // Sort kelas
+            kelasList.sort((a, b) => {
+                const nameA = a.Nama || a.nama;
+                const nameB = b.Nama || b.nama;
+                return nameA.localeCompare(nameB);
+            });
+            
+            kelasList.forEach(k => {
+                const nama = k.Nama || k.nama;
+                document.getElementById('filterKelas').innerHTML += `<option value="${nama}">${nama}</option>`;
+            });
+            
+            settings = await settingsRes.json();
+            document.getElementById('schoolName').textContent = settings.namaSekolah || 'SEKOLAH MENENGAH ATAS';
+            document.getElementById('schoolAddress').textContent = [settings.alamatSekolah, settings.kotaSekolah, settings.provinsiSekolah].filter(Boolean).join(', ') || 'Alamat Sekolah';
+            document.getElementById('teacherName').textContent = settings.teacherName || '________________________';
+            document.getElementById('semester').textContent = settings.semester === '2' ? 'Genap' : 'Ganjil';
+            document.getElementById('tahunAjaran').textContent = settings.tahunAjaran || '2025/2026';
+            
+            const today = new Date();
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            document.getElementById('cityDate').textContent = `${settings.kotaSekolah || 'Kota'}, ${today.getDate()} ${months[today.getMonth()]} ${today.getFullYear()}`;
+        } catch (err) {
+            console.error('Error loading data:', err);
+        }
+    });
+
+    async function loadSiswa() {
+        const kelas = document.getElementById('filterKelas').value;
+        if (!kelas) return;
+        
+        try {
+            const res = await fetch(`${API_URL}/siswa`);
+            const allStudents = await res.json();
+            students = allStudents.filter(s => (s.Kelas || s.kelas) === kelas);
+            
+            // Sort by name
+            students.sort((a, b) => {
+                const nameA = a.Nama || a.nama;
+                const nameB = b.Nama || b.nama;
+                return nameA.localeCompare(nameB);
+            });
+            
+            const select = document.getElementById('filterSiswa');
+            select.innerHTML = '<option value="">👤 Pilih Siswa</option>';
+            students.forEach(s => {
+                const id = s.id || s.Id;
+                const nama = s.Nama || s.nama;
+                const nis = s.NIS || s.nis || '';
+                select.innerHTML += `<option value="${id}">${nama} ${nis ? '(' + nis + ')' : ''}</option>`;
+            });
+        } catch (err) {
+            console.error('Error loading siswa:', err);
+        }
+    }
+
+    async function loadRapor() {
+        const studentId = document.getElementById('filterSiswa').value;
+        if (!studentId) {
+            document.getElementById('raporContainer').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'block';
+            return;
+        }
+        
+        const student = students.find(s => (s.id || s.Id) === studentId);
+        if (!student) return;
+        
+        document.getElementById('studentName').textContent = student.Nama || student.nama;
+        document.getElementById('studentClass').textContent = student.Kelas || student.kelas;
+        document.getElementById('studentNIS').textContent = student.NIS || student.nis || '-';
+
+        try {
+            const [mapelRes, gradesRes] = await Promise.all([
+                fetch(`${API_URL}/mapel`),
+                fetch(`${API_URL}/nilai`)
+            ]);
+            
+            const mapelList = await mapelRes.json();
+            const allGrades = await gradesRes.json();
+            const grades = allGrades.filter(g => g.studentId === studentId);
+
+            document.getElementById('raporTable').innerHTML = mapelList.map((m, i) => {
+                const mapelName = m.Nama || m.nama;
+                const mapelGrades = grades.filter(g => (g.Mapel || g.mapel) === mapelName);
+                
+                const ki3 = mapelGrades.filter(g => (g.Jenis || g.jenis) === 'KI-3').map(g => g.Nilai || g.nilai).filter(Boolean);
+                const ki4 = mapelGrades.filter(g => (g.Jenis || g.jenis) === 'KI-4').map(g => g.Nilai || g.nilai).filter(Boolean);
+                
+                const avgKi3 = ki3.length ? Math.round(ki3.reduce((a, b) => a + b, 0) / ki3.length) : '-';
+                const avgKi4 = ki4.length ? Math.round(ki4.reduce((a, b) => a + b, 0) / ki4.length) : '-';
+                
+                let avg = '-';
+                let predikat = '-';
+                
+                if (avgKi3 !== '-' || avgKi4 !== '-') {
+                    const numKi3 = avgKi3 !== '-' ? avgKi3 : 0;
+                    const numKi4 = avgKi4 !== '-' ? avgKi4 : 0;
+                    const count = (avgKi3 !== '-' ? 1 : 0) + (avgKi4 !== '-' ? 1 : 0);
+                    avg = Math.round((numKi3 + numKi4) / count);
+                    predikat = avg >= 90 ? 'A' : avg >= 80 ? 'B' : avg >= 75 ? 'C' : 'D';
+                }
+                
+                return `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td>${mapelName}</td>
+                        <td>${avgKi3}</td>
+                        <td>${avgKi4}</td>
+                        <td><strong>${avg}</strong></td>
+                        <td><strong>${predikat}</strong></td>
+                    </tr>`;
+            }).join('');
+
+            document.getElementById('raporContainer').style.display = 'block';
+            document.getElementById('emptyState').style.display = 'none';
+        } catch (err) {
+            console.error('Error loading rapor:', err);
+        }
+    }
+
+    async function printRapor() {
+        const studentName = document.getElementById('studentName').textContent;
+        if (studentName === '-') {
+            alert('Pilih siswa terlebih dahulu');
+            return;
+        }
+        
+        try {
+            const { jsPDF } = window.jspdf;
+            const element = document.getElementById('raporPreview');
+            
+            // Temporarily remove premium badge for print
+            const badge = document.querySelector('.premium-badge');
+            if (badge) badge.style.display = 'none';
+            
+            const canvas = await html2canvas(element, { 
+                scale: 2,
+                backgroundColor: '#ffffff',
+                useCORS: true
+            });
+            
+            if (badge) badge.style.display = 'block';
+            
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+            
+            pdf.addImage(imgData, 'PNG', 0, 10, pdfWidth, pdfHeight);
+            pdf.save(`Rapor_${studentName.replace(/\s+/g, '_')}.pdf`);
+        } catch (err) {
+            console.error('Error printing rapor:', err);
+            alert('Gagal mencetak rapor: ' + err.message);
+        }
+    }
+</script>
+}

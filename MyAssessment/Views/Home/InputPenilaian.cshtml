@@ -1,0 +1,220 @@
+@{
+    ViewData["Title"] = "Input Penilaian";
+}
+
+@section Styles {
+<style>
+    .grade-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .grade-table th { background: #f8f9fa; padding: 10px 12px; text-align: center; font-weight: 600; color: #555; border: 1px solid #e0e0e0; }
+    .grade-table td { padding: 8px 10px; border: 1px solid #e0e0e0; text-align: center; }
+    .grade-table .student-name { text-align: left; font-weight: 500; }
+    .grade-input { width: 50px; padding: 6px; border: 1px solid #ddd; border-radius: 4px; text-align: center; font-size: 13px; }
+    .grade-input:focus { border-color: #24b0ba; outline: none; }
+    .grade-avg { font-weight: 600; color: #24b0ba; }
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px; }
+    .stat-mini { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-align: center; }
+    .stat-mini h4 { font-size: 11px; color: #888; margin-bottom: 5px; }
+    .stat-mini .value { font-size: 24px; font-weight: 700; color: #24b0ba; }
+</style>
+}
+
+<div class="top-header">
+    <div class="page-title">
+        <h1>📝 Input Penilaian</h1>
+        <p>Input nilai UH, PTS, PAS untuk KI-3 dan Praktik, Proyek, Portofolio untuk KI-4</p>
+    </div>
+</div>
+
+<div class="content-area">
+    <div class="message" id="message"></div>
+
+    <div class="filter-bar">
+        <div class="filter-group">
+            <label>Kelas</label>
+            <select class="filter-select" id="filterKelas" onchange="loadGrades()">
+                <option value="">Pilih Kelas</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Mata Pelajaran</label>
+            <select class="filter-select" id="filterMapel" onchange="loadKDByMapel()">
+                <option value="">Pilih Mapel</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Kompetensi Dasar</label>
+            <select class="filter-select" id="filterKD" onchange="loadGrades()">
+                <option value="">Pilih KD</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>&nbsp;</label>
+            <button class="btn btn-primary" onclick="loadGrades()">🔍 Tampilkan</button>
+        </div>
+    </div>
+
+    <div class="stats-row" id="statsRow" style="display: none;">
+        <div class="stat-mini"><h4>Jumlah Siswa</h4><div class="value" id="statTotal">0</div></div>
+        <div class="stat-mini"><h4>Rata-rata</h4><div class="value" id="statAvg">0</div></div>
+        <div class="stat-mini"><h4>Tuntas</h4><div class="value" id="statPass">0</div></div>
+        <div class="stat-mini"><h4>Belum Tuntas</h4><div class="value" id="statFail">0</div></div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>📋 Daftar Nilai Siswa</h3>
+            <div>
+                <button class="btn btn-success" onclick="saveAllGrades()">💾 Simpan Semua</button>
+            </div>
+        </div>
+        <div class="card-body" style="padding: 0; overflow-x: auto;">
+            <table class="grade-table" id="gradeTable">
+                <thead id="gradeHead"></thead>
+                <tbody id="gradeBody">
+                    <tr><td colspan="10"><div class="empty-state"><div class="icon">📝</div><h4>Pilih Kelas dan KD terlebih dahulu</h4></div></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let students = [];
+    let grades = [];
+
+    document.addEventListener('DOMContentLoaded', loadFilters);
+
+    async function loadFilters() {
+        const [kelasRes, mapelRes] = await Promise.all([
+            fetch(`${API_URL}/kelas`),
+            fetch(`${API_URL}/mapel`)
+        ]);
+        
+        const kelasList = await kelasRes.json();
+        const mapelList = await mapelRes.json();
+        
+        const filterKelas = document.getElementById('filterKelas');
+        const filterMapel = document.getElementById('filterMapel');
+        
+        kelasList.forEach(k => filterKelas.innerHTML += `<option value="${k.nama}">${k.nama}</option>`);
+        mapelList.forEach(m => filterMapel.innerHTML += `<option value="${m.nama}">${m.nama}</option>`);
+    }
+
+    async function loadKDByMapel() {
+        const mapel = document.getElementById('filterMapel').value;
+        const filterKD = document.getElementById('filterKD');
+        filterKD.innerHTML = '<option value="">Pilih KD</option>';
+        
+        if (!mapel) return;
+        
+        const res = await fetch(`${API_URL}/kompetensi`);
+        const kdList = (await res.json()).filter(k => k.mapel === mapel);
+        
+        kdList.forEach(kd => {
+            filterKD.innerHTML += `<option value="${kd.id}" data-kkm="${kd.kkm}" data-jenis="${kd.jenis}">${kd.kode} - ${kd.jenis}</option>`;
+        });
+    }
+
+    async function loadGrades() {
+        const kelas = document.getElementById('filterKelas').value;
+        const kdId = document.getElementById('filterKD').value;
+        
+        if (!kelas || !kdId) {
+            document.getElementById('gradeBody').innerHTML = '<tr><td colspan="10"><div class="empty-state"><div class="icon">📝</div><h4>Pilih Kelas dan KD terlebih dahulu</h4></div></td></tr>';
+            document.getElementById('statsRow').style.display = 'none';
+            return;
+        }
+
+        const kdOption = document.querySelector(`#filterKD option[value="${kdId}"]`);
+        const kkm = parseInt(kdOption.dataset.kkm) || 75;
+        const jenis = kdOption.dataset.jenis;
+
+        const studentsRes = await fetch(`${API_URL}/siswa`);
+        students = (await studentsRes.json()).filter(s => s.kelas === kelas);
+
+        const gradesRes = await fetch(`${API_URL}/nilai?kdId=${kdId}`);
+        grades = await gradesRes.json();
+
+        renderGradeTable(jenis, kkm);
+        document.getElementById('statsRow').style.display = 'grid';
+    }
+
+    function renderGradeTable(jenis, kkm) {
+        const thead = document.getElementById('gradeHead');
+        const tbody = document.getElementById('gradeBody');
+
+        let headers = '<tr><th>No</th><th>Nama Siswa</th>';
+        headers += jenis === 'KI-3' ? '<th>UH1</th><th>UH2</th><th>UH3</th><th>PTS</th><th>PAS</th>' : '<th>Praktik</th><th>Proyek</th><th>Portofolio</th>';
+        headers += '<th>Rata-rata</th><th>Predikat</th></tr>';
+        thead.innerHTML = headers;
+
+        if (!students.length) {
+            tbody.innerHTML = '<tr><td colspan="10"><div class="empty-state">Tidak ada siswa di kelas ini</div></td></tr>';
+            return;
+        }
+
+        let totalAvg = 0, passCount = 0;
+
+        tbody.innerHTML = students.map((s, i) => {
+            const grade = grades.find(g => g.studentId === s.id) || {};
+            let inputs = '', vals = [];
+
+            if (jenis === 'KI-3') {
+                ['uh1', 'uh2', 'uh3', 'pts', 'pas'].forEach(f => {
+                    const v = grade[f] || '';
+                    inputs += `<td><input type="number" class="grade-input" data-student="${s.id}" data-field="${f}" value="${v}" min="0" max="100"></td>`;
+                    if (v) vals.push(Number(v));
+                });
+            } else {
+                ['praktik', 'proyek', 'portofolio'].forEach(f => {
+                    const v = grade[f] || '';
+                    inputs += `<td><input type="number" class="grade-input" data-student="${s.id}" data-field="${f}" value="${v}" min="0" max="100"></td>`;
+                    if (v) vals.push(Number(v));
+                });
+            }
+
+            const avg = vals.length ? (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1) : 0;
+            totalAvg += parseFloat(avg);
+            if (parseFloat(avg) >= kkm) passCount++;
+            const predikat = avg >= 90 ? 'A' : avg >= 80 ? 'B' : avg >= kkm ? 'C' : 'D';
+
+            return `<tr><td>${i + 1}</td><td class="student-name">${s.nama}</td>${inputs}<td class="grade-avg" id="avg-${s.id}">${avg}</td><td><strong>${predikat}</strong></td></tr>`;
+        }).join('');
+
+        document.getElementById('statTotal').textContent = students.length;
+        document.getElementById('statAvg').textContent = (totalAvg / students.length).toFixed(1);
+        document.getElementById('statPass').textContent = passCount;
+        document.getElementById('statFail').textContent = students.length - passCount;
+    }
+
+    async function saveAllGrades() {
+        const kdId = document.getElementById('filterKD').value;
+        const inputs = document.querySelectorAll('.grade-input');
+        const gradeData = {};
+
+        inputs.forEach(input => {
+            const studentId = input.dataset.student;
+            const field = input.dataset.field;
+            if (!gradeData[studentId]) gradeData[studentId] = { studentId, kdId };
+            gradeData[studentId][field] = input.value ? parseInt(input.value) : null;
+        });
+
+        for (const studentId in gradeData) {
+            await fetch(`${API_URL}/nilai`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(gradeData[studentId])
+            });
+        }
+        showMessage('Nilai berhasil disimpan!', 'success');
+    }
+
+    function showMessage(text, type) {
+        const msg = document.getElementById('message');
+        msg.textContent = text;
+        msg.className = 'message ' + type;
+        setTimeout(() => msg.className = 'message', 3000);
+    }
+</script>
+}

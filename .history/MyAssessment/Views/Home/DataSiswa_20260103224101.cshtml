@@ -1,0 +1,891 @@
+@{
+    ViewData["Title"] = "Data Siswa";
+}
+
+@section Styles {
+<style>
+    /* ========== GLASSMORPHISM THEME ========== */
+    .content-area {
+        background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #0d1b2a 100%);
+        min-height: calc(100vh - 60px);
+        padding: 24px;
+        position: relative;
+    }
+    
+    .content-area::before {
+        content: '';
+        position: absolute;
+        top: 10%;
+        left: 5%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(0, 255, 255, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    
+    .content-area::after {
+        content: '';
+        position: absolute;
+        bottom: 10%;
+        right: 10%;
+        width: 250px;
+        height: 250px;
+        background: radial-gradient(circle, rgba(0, 200, 150, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    /* Glass Card */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        position: relative;
+        z-index: 1;
+    }
+
+    .card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card-header h3 {
+        color: #fff;
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .total-badge {
+        background: linear-gradient(135deg, #00d4aa, #00bcd4);
+        color: #0d1b2a;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    /* Search Box */
+    .search-box {
+        display: flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.08);
+        border: 2px solid rgba(0, 212, 170, 0.3);
+        border-radius: 12px;
+        padding: 0 16px;
+        transition: all 0.3s ease;
+        min-width: 280px;
+    }
+
+    .search-box:focus-within {
+        border-color: #00d4aa;
+        background: rgba(255, 255, 255, 0.12);
+        box-shadow: 0 0 20px rgba(0, 212, 170, 0.2);
+    }
+
+    .search-box .search-icon {
+        color: #00d4aa;
+        font-size: 18px;
+        margin-right: 10px;
+    }
+
+    .search-box input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        padding: 12px 0;
+        color: #fff;
+        font-size: 14px;
+        outline: none;
+    }
+
+    .search-box input::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+    .search-box .clear-btn {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 16px;
+        cursor: pointer;
+        padding: 4px 8px;
+        display: none;
+    }
+
+    .search-box .clear-btn:hover {
+        color: #ff4757;
+    }
+
+    .search-box .clear-btn.visible {
+        display: block;
+    }
+
+    /* Search Result Info */
+    .search-info {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 13px;
+        margin-left: auto;
+        padding: 8px 16px;
+        background: rgba(0, 212, 170, 0.1);
+        border-radius: 8px;
+        display: none;
+    }
+
+    .search-info.visible {
+        display: block;
+    }
+
+    .search-info strong {
+        color: #00d4aa;
+    }
+
+    /* Highlight search match */
+    .highlight {
+        background: rgba(0, 212, 170, 0.3);
+        color: #00ffcc;
+        padding: 1px 4px;
+        border-radius: 4px;
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 1;
+        align-items: flex-end;
+    }
+
+    .filter-group label {
+        display: block;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 12px;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .filter-select {
+        background: #1b263b !important;
+        border: 2px solid #00d4aa !important;
+        border-radius: 12px;
+        padding: 12px 16px;
+        color: #fff !important;
+        font-size: 14px;
+        min-width: 200px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2300d4aa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 36px;
+    }
+
+    .filter-select:hover, .filter-select:focus {
+        background-color: #243447 !important;
+        border-color: #00ffcc !important;
+        outline: none;
+        box-shadow: 0 0 20px rgba(0, 212, 170, 0.3);
+    }
+
+    .filter-select option {
+        background: #1b263b !important;
+        color: #fff !important;
+        padding: 12px;
+    }
+
+    /* Neon Buttons */
+    .btn-neon-cyan {
+        background: linear-gradient(135deg, #00d4aa, #00bcd4);
+        color: #0d1b2a;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 212, 170, 0.3);
+    }
+
+    .btn-neon-cyan:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(0, 212, 170, 0.5);
+    }
+
+    /* Data Table */
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .data-table thead {
+        background: rgba(0, 212, 170, 0.1);
+    }
+
+    .data-table th {
+        padding: 16px 20px;
+        text-align: left;
+        color: #00d4aa;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .data-table td {
+        padding: 16px 20px;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .data-table tbody tr {
+        transition: all 0.3s ease;
+    }
+
+    .data-table tbody tr:hover {
+        background: rgba(0, 212, 170, 0.08);
+    }
+
+    .data-table tbody tr:hover td {
+        color: #fff;
+    }
+
+    /* Action Buttons */
+    .action-btn {
+        width: 36px;
+        height: 36px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        margin: 0 4px;
+    }
+
+    .btn-edit {
+        background: rgba(0, 212, 170, 0.15);
+        color: #00d4aa;
+        border: 1px solid rgba(0, 212, 170, 0.3);
+    }
+
+    .btn-edit:hover {
+        background: #00d4aa;
+        color: #0d1b2a;
+        transform: scale(1.1);
+        box-shadow: 0 0 20px rgba(0, 212, 170, 0.4);
+    }
+
+    .btn-delete {
+        background: rgba(255, 71, 87, 0.15);
+        color: #ff4757;
+        border: 1px solid rgba(255, 71, 87, 0.3);
+    }
+
+    .btn-delete:hover {
+        background: #ff4757;
+        color: #fff;
+        transform: scale(1.1);
+        box-shadow: 0 0 20px rgba(255, 71, 87, 0.4);
+    }
+
+    /* Gender Badge */
+    .gender-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .gender-male {
+        background: rgba(52, 152, 219, 0.2);
+        color: #3498db;
+        border: 1px solid rgba(52, 152, 219, 0.3);
+    }
+
+    .gender-female {
+        background: rgba(255, 107, 157, 0.2);
+        color: #ff6b9d;
+        border: 1px solid rgba(255, 107, 157, 0.3);
+    }
+
+    /* Class Badge */
+    .class-badge {
+        background: rgba(0, 212, 170, 0.15);
+        color: #00d4aa;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    /* Modal Glassmorphism */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(13, 27, 42, 0.8);
+        backdrop-filter: blur(8px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+        background: rgba(27, 38, 59, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        width: 90%;
+        max-width: 480px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        animation: modalSlide 0.3s ease;
+    }
+
+    @@keyframes modalSlide {
+        from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-header {
+        padding: 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-header h3 {
+        color: #fff;
+        font-size: 20px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .modal-close {
+        background: rgba(255, 71, 87, 0.15);
+        border: 1px solid rgba(255, 71, 87, 0.3);
+        color: #ff4757;
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        font-size: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-close:hover {
+        background: #ff4757;
+        color: #fff;
+    }
+
+    .modal-body {
+        padding: 24px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 12px;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-control {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        padding: 14px 16px;
+        color: #fff;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #00d4aa;
+        background: rgba(255, 255, 255, 0.12);
+        box-shadow: 0 0 20px rgba(0, 212, 170, 0.2);
+    }
+
+    .form-control option {
+        background: #1b263b;
+        color: #fff;
+    }
+
+    .btn-save {
+        width: 100%;
+        background: linear-gradient(135deg, #00d4aa, #00bcd4);
+        color: #0d1b2a;
+        border: none;
+        padding: 16px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 212, 170, 0.3);
+        margin-top: 8px;
+    }
+
+    .btn-save:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(0, 212, 170, 0.5);
+    }
+
+    /* Message Toast */
+    .message {
+        position: fixed;
+        top: 80px;
+        right: 24px;
+        padding: 16px 24px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 2000;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: all 0.3s ease;
+    }
+
+    .message.success {
+        background: rgba(0, 212, 170, 0.9);
+        color: #0d1b2a;
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .message.error {
+        background: rgba(255, 71, 87, 0.9);
+        color: #fff;
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .empty-state-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+    }
+
+    /* Page Title */
+    .top-header {
+        margin-bottom: 24px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .page-title h1 {
+        color: #fff;
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0 0 8px 0;
+    }
+
+    .page-title p {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 14px;
+        margin: 0;
+    }
+</style>
+}
+
+<div class="top-header">
+    <div class="page-title">
+        <h1>👥 Data Siswa</h1>
+        <p>Kelola data siswa per kelas</p>
+    </div>
+</div>
+
+<div class="content-area">
+    <div class="message" id="message"></div>
+
+    <div class="filter-bar">
+        <div class="filter-group">
+            <label>Filter Kelas</label>
+            <select class="filter-select" id="filterKelas" onchange="loadSiswa()">
+                <option value="">Semua Kelas</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Cari Siswa</label>
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Cari nama atau NIS..." oninput="searchSiswa()">
+                <button class="clear-btn" id="clearSearch" onclick="clearSearch()">✕</button>
+            </div>
+        </div>
+        <div class="filter-group">
+            <label>&nbsp;</label>
+            <button class="btn-neon-cyan" onclick="openAddModal()">➕ Tambah Siswa</button>
+        </div>
+        <span class="search-info" id="searchInfo"></span>
+    </div>
+
+    <div class="glass-card">
+        <div class="card-header">
+            <h3>📋 Daftar Siswa</h3>
+            <span class="total-badge" id="totalCount">0 Siswa</span>
+        </div>
+        <div class="card-body" style="padding: 0;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>NIS</th>
+                        <th>Nama Lengkap</th>
+                        <th>Kelas</th>
+                        <th>Jenis Kelamin</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="siswaTable"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="siswaModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="modalTitle">Tambah Siswa</h3>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="siswaId">
+            <div class="form-group">
+                <label>NIS</label>
+                <input type="text" class="form-control" id="nis" placeholder="Nomor Induk Siswa">
+            </div>
+            <div class="form-group">
+                <label>Nama Lengkap</label>
+                <input type="text" class="form-control" id="nama" placeholder="Nama lengkap siswa">
+            </div>
+            <div class="form-group">
+                <label>Kelas</label>
+                <select class="form-control" id="kelas"></select>
+            </div>
+            <div class="form-group">
+                <label>Jenis Kelamin</label>
+                <select class="form-control" id="jenisKelamin">
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                </select>
+            </div>
+            <button class="btn-save" onclick="saveSiswa()">💾 Simpan Data</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let siswaList = [];
+    let kelasList = [];
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadKelas();
+        loadSiswa();
+    });
+
+    // ========== IMPROVED SORTING FUNCTION ==========
+    function getClassSortKey(className) {
+        // Parse: "X IPA 1", "XI IPS 2", "XII IPA 1"
+        const tingkatOrder = { 'X': 1, 'XI': 2, 'XII': 3 };
+        const jurusanOrder = { 'IPA': 1, 'IPS': 2 };
+        
+        // Improved regex to properly capture X, XI, XII
+        const match = className.match(/^(XII|XI|X)\s+(IPA|IPS)\s+(\d+)$/i);
+        
+        if (match) {
+            const tingkat = match[1].toUpperCase();
+            const jurusan = match[2].toUpperCase();
+            const nomor = parseInt(match[3]);
+            
+            // Create sort key: tingkat * 1000 + jurusan * 100 + nomor
+            return (tingkatOrder[tingkat] || 99) * 1000 + 
+                   (jurusanOrder[jurusan] || 99) * 100 + 
+                   nomor;
+        }
+        return 999999; // Unknown format goes to end
+    }
+
+    function sortClasses(classes) {
+        return [...classes].sort((a, b) => {
+            const nameA = a.Nama || a.nama || a;
+            const nameB = b.Nama || b.nama || b;
+            return getClassSortKey(nameA) - getClassSortKey(nameB);
+        });
+    }
+
+    // Sort dropdown options after they're populated
+    function sortDropdownOptions(selectElement, keepFirstOption = false) {
+        const options = Array.from(selectElement.options);
+        
+        // Separate first option if needed (e.g., "Semua Kelas")
+        const firstOption = keepFirstOption ? options.shift() : null;
+        
+        // Sort remaining options
+        options.sort((a, b) => getClassSortKey(a.value) - getClassSortKey(b.value));
+        
+        // Clear and rebuild
+        selectElement.innerHTML = '';
+        if (firstOption) selectElement.appendChild(firstOption);
+        options.forEach(opt => selectElement.appendChild(opt));
+    }
+
+    async function loadKelas() {
+        try {
+            const res = await fetch(`${API_URL}/kelas`);
+            const data = await res.json();
+            
+            // Sort classes properly
+            kelasList = sortClasses(data);
+            
+            const filterKelas = document.getElementById('filterKelas');
+            const kelasSelect = document.getElementById('kelas');
+            
+            // Clear existing options
+            filterKelas.innerHTML = '<option value="">📚 Semua Kelas</option>';
+            kelasSelect.innerHTML = '';
+            
+            // Add sorted options
+            kelasList.forEach(k => {
+                const nama = k.Nama || k.nama;
+                filterKelas.innerHTML += `<option value="${nama}">${nama}</option>`;
+                kelasSelect.innerHTML += `<option value="${nama}">${nama}</option>`;
+            });
+            
+            // Double-check sorting on dropdowns
+            sortDropdownOptions(filterKelas, true);
+            sortDropdownOptions(kelasSelect, false);
+            
+            console.log('✅ Kelas loaded & sorted:', kelasList.map(k => k.Nama || k.nama));
+        } catch (err) {
+            console.error('Error loading kelas:', err);
+        }
+    }
+
+    async function loadSiswa() {
+        try {
+            const kelas = document.getElementById('filterKelas').value;
+            const res = await fetch(`${API_URL}/siswa`);
+            const data = await res.json();
+            
+            // Support both array response and object with data property
+            siswaList = Array.isArray(data) ? data : (data.data || []);
+            
+            // Filter by kelas
+            if (kelas) {
+                siswaList = siswaList.filter(s => (s.Kelas || s.kelas) === kelas);
+            }
+            
+            // Sort students by class (using our sort key) then by name
+            siswaList.sort((a, b) => {
+                const kelasA = a.Kelas || a.kelas || '';
+                const kelasB = b.Kelas || b.kelas || '';
+                
+                // First sort by class using our custom sort key
+                const classDiff = getClassSortKey(kelasA) - getClassSortKey(kelasB);
+                if (classDiff !== 0) return classDiff;
+                
+                // Then by name alphabetically
+                const namaA = a.Nama || a.nama || '';
+                const namaB = b.Nama || b.nama || '';
+                return namaA.localeCompare(namaB);
+            });
+            
+            // Update total count - FIX "undefined" bug
+            const total = siswaList.length;
+            document.getElementById('totalCount').textContent = `${total} Siswa`;
+            
+            // Render table
+            const tbody = document.getElementById('siswaTable');
+            
+            if (siswaList.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📭</div>
+                                <p>Tidak ada data siswa</p>
+                            </div>
+                        </td>
+                    </tr>`;
+                return;
+            }
+            
+            tbody.innerHTML = siswaList.map((s, i) => {
+                const id = s.id || s.Id;
+                const nis = s.NIS || s.nis || '-';
+                const nama = s.Nama || s.nama || '';
+                const kelasVal = s.Kelas || s.kelas || '';
+                const jk = s.JenisKelamin || s.jenisKelamin || '';
+                const isMale = jk === 'Laki-laki';
+                
+                return `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td><strong>${nis}</strong></td>
+                    <td>${nama}</td>
+                    <td><span class="class-badge">${kelasVal}</span></td>
+                    <td><span class="gender-badge ${isMale ? 'gender-male' : 'gender-female'}">${isMale ? '👨' : '👩'} ${jk}</span></td>
+                    <td>
+                        <button class="action-btn btn-edit" onclick="editSiswa('${id}')" title="Edit">✏️</button>
+                        <button class="action-btn btn-delete" onclick="deleteSiswa('${id}')" title="Hapus">🗑️</button>
+                    </td>
+                </tr>`;
+            }).join('');
+        } catch (err) {
+            console.error('Error loading siswa:', err);
+            document.getElementById('totalCount').textContent = '0 Siswa';
+        }
+    }
+
+    function openAddModal() {
+        document.getElementById('modalTitle').textContent = 'Tambah Siswa Baru';
+        document.getElementById('siswaId').value = '';
+        document.getElementById('nis').value = '';
+        document.getElementById('nama').value = '';
+        if (kelasList.length > 0) {
+            document.getElementById('kelas').value = kelasList[0].Nama || kelasList[0].nama;
+        }
+        document.getElementById('jenisKelamin').value = 'Laki-laki';
+        document.getElementById('siswaModal').classList.add('active');
+    }
+
+    function editSiswa(id) {
+        const s = siswaList.find(x => (x.id || x.Id) === id);
+        if (!s) {
+            showMessage('Data siswa tidak ditemukan', 'error');
+            return;
+        }
+        
+        document.getElementById('modalTitle').textContent = 'Edit Data Siswa';
+        document.getElementById('siswaId').value = s.id || s.Id;
+        document.getElementById('nis').value = s.NIS || s.nis || '';
+        document.getElementById('nama').value = s.Nama || s.nama || '';
+        document.getElementById('kelas').value = s.Kelas || s.kelas || '';
+        document.getElementById('jenisKelamin').value = s.JenisKelamin || s.jenisKelamin || 'Laki-laki';
+        document.getElementById('siswaModal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('siswaModal').classList.remove('active');
+    }
+
+    async function saveSiswa() {
+        const id = document.getElementById('siswaId').value;
+        
+        const data = {
+            NIS: document.getElementById('nis').value.trim(),
+            Nama: document.getElementById('nama').value.trim(),
+            Kelas: document.getElementById('kelas').value,
+            JenisKelamin: document.getElementById('jenisKelamin').value
+        };
+
+        if (!data.NIS || !data.Nama || !data.Kelas) {
+            showMessage('NIS, Nama, dan Kelas wajib diisi!', 'error');
+            return;
+        }
+
+        const url = id ? `${API_URL}/siswa/${id}` : `${API_URL}/siswa`;
+        const method = id ? 'PUT' : 'POST';
+
+        try {
+            const res = await fetch(url, { 
+                method, 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify(data) 
+            });
+            
+            const result = await res.json();
+            
+            if (res.ok) {
+                closeModal();
+                loadSiswa();
+                showMessage(result.message || 'Data siswa berhasil disimpan!', 'success');
+            } else {
+                showMessage(result.message || 'Gagal menyimpan data', 'error');
+            }
+        } catch (err) {
+            showMessage('Error: ' + err.message, 'error');
+        }
+    }
+
+    async function deleteSiswa(id) {
+        if (!confirm('Yakin ingin menghapus siswa ini?')) return;
+        
+        try {
+            const res = await fetch(`${API_URL}/siswa/${id}`, { method: 'DELETE' });
+            const result = await res.json();
+            
+            if (res.ok) {
+                loadSiswa();
+                showMessage(result.message || 'Siswa berhasil dihapus!', 'success');
+            } else {
+                showMessage(result.message || 'Gagal menghapus siswa', 'error');
+            }
+        } catch (err) {
+            showMessage('Error: ' + err.message, 'error');
+        }
+    }
+
+    function showMessage(text, type) {
+        const msg = document.getElementById('message');
+        msg.textContent = text;
+        msg.className = 'message ' + type;
+        setTimeout(() => msg.className = 'message', 3000);
+    }
+
+    // Close modal on overlay click
+    document.getElementById('siswaModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeModal();
+    });
+</script>
+}

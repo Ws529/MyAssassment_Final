@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 180" fill="none">
+  <!-- Open Book -->
+  <path d="M30 50 C30 50 50 45 100 45 C150 45 170 50 170 50 L170 130 C170 130 150 125 100 125 C50 125 30 130 30 130 Z" 
+        stroke="#5B9BD5" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Center line of book -->
+  <path d="M100 45 L100 125" stroke="#5B9BD5" stroke-width="4" stroke-linecap="round"/>
+  <!-- Left page curve -->
+  <path d="M30 50 C50 55 80 50 100 45" stroke="#5B9BD5" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- Right page curve -->
+  <path d="M170 50 C150 55 120 50 100 45" stroke="#5B9BD5" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- Checkmark -->
+  <path d="M65 85 L90 110 L135 55" stroke="#5B9BD5" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

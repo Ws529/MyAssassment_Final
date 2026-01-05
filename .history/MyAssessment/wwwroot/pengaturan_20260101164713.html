@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pengaturan - My Assessment K13</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); min-height: 100vh; }
+        .app-container { display: flex; min-height: 100vh; }
+
+        /* Sidebar - Deep Ocean Drive Theme */
+        .sidebar { width: 260px; background: linear-gradient(180deg, #24b0ba 0%, #156d73 60%, #0d2c2e 100%); color: #e2e8f0; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; border-right: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3); }
+        .sidebar-header { padding: 25px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.1); }
+        .sidebar-header img { width: 45px; height: 45px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .sidebar-header h2 { font-size: 20px; font-weight: 700; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .sidebar-header span { font-size: 11px; color: rgba(255,255,255,0.8); display: block; margin-top: 2px; }
+        .sidebar-menu { padding: 20px 0; }
+        .menu-label { padding: 15px 20px 8px; font-size: 10px; text-transform: uppercase; color: rgba(255,255,255,0.5); letter-spacing: 2px; font-weight: 600; }
+        .menu-item { display: flex; align-items: center; gap: 14px; padding: 14px 20px; color: #e2e8f0; text-decoration: none; transition: all 0.3s ease; border-left: 4px solid transparent; margin: 2px 8px 2px 0; border-radius: 0 25px 25px 0; }
+        .menu-item:hover { background: rgba(255, 255, 255, 0.1); color: #ffffff; border-left-color: rgba(255, 255, 255, 0.5); }
+        .menu-item.active { background: rgba(255, 255, 255, 0.15); border-left-color: #ffffff; color: #ffffff; text-shadow: 0 0 10px #ffffff, 0 0 20px rgba(255,255,255,0.5); box-shadow: inset 0 0 20px rgba(255,255,255,0.1); }
+        .menu-item .icon { font-size: 20px; width: 28px; text-align: center; }
+        .sidebar-footer { position: absolute; bottom: 0; width: 100%; padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); }
+        .logout-btn { display: flex; align-items: center; gap: 12px; color: #fca5a5; text-decoration: none; font-size: 14px; font-weight: 500; padding: 12px 15px; border-radius: 10px; transition: all 0.3s ease; }
+        .logout-btn:hover { background: rgba(255,100,100,0.2); color: #ff8a8a; text-shadow: 0 0 10px rgba(255,100,100,0.5); }
+
+        /* Main Content */
+        .main-content { flex: 1; margin-left: 260px; min-height: 100vh; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
+        .top-header { background: linear-gradient(135deg, #24b0ba 0%, #1a8a93 100%); color: white; padding: 30px; }
+        .page-title h1 { font-size: 26px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+        .page-title p { font-size: 13px; opacity: 0.9; margin-top: 5px; }
+        .content-area { padding: 30px; }
+</style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="assets/img/logo.png" alt="Logo">
+                <div><h2>MyAssessment</h2><span>Sistem Penilaian K13</span></div>
+            </div>
+            <nav class="sidebar-menu">
+                <div class="menu-label">Menu Utama</div>
+                <a href="index.html" class="menu-item"><span class="icon">🏠</span><span>Dashboard</span></a>
+                <a href="siswa.html" class="menu-item"><span class="icon">👥</span><span>Data Siswa</span></a>
+                <a href="kompetensi.html" class="menu-item"><span class="icon">📚</span><span>Kompetensi Dasar</span></a>
+                <a href="penilaian.html" class="menu-item"><span class="icon">📝</span><span>Input Penilaian</span></a>
+                <div class="menu-label">Laporan</div>
+                <a href="rekap.html" class="menu-item"><span class="icon">📊</span><span>Rekap Nilai</span></a>
+                <a href="rapor.html" class="menu-item"><span class="icon">📄</span><span>Cetak Rapor</span></a>
+                <div class="menu-label">Pengaturan</div>
+                <a href="pengaturan.html" class="menu-item active"><span class="icon">⚙️</span><span>Pengaturan</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="login.html" class="logout-btn" onclick="logout()"><span>🚪</span><span>Logout</span></a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-header">
+                <div class="page-title">
+                    <h1>⚙️ Pengaturan Sistem</h1>
+                    <p>Konfigurasi profil guru, identitas sekolah, dan pengaturan akademik K13</p>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <!-- Message -->
+                <div class="message" id="message"></div>
+
+                <!-- Settings Grid -->
+                <div class="settings-grid">
+                    <!-- Card 1: Profil Pengampu -->
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <div class="card-icon">👨‍🏫</div>
+                            <h3>Profil Pengampu</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Nama Lengkap (dengan Gelar)</label>
+                                <input type="text" class="form-control" id="teacherName" placeholder="Dr. Ahmad Suryadi, M.Pd.">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>NIP</label>
+                                    <input type="text" class="form-control" id="teacherNIP" placeholder="198501012010011001">
+                                </div>
+                                <div class="form-group">
+                                    <label>Mata Pelajaran</label>
+                                    <select class="form-control" id="teacherMapel">
+                                        <option value="">Pilih Mapel</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <p class="hint">📌 Data ini akan muncul sebagai penandatangan di laporan nilai</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Identitas Sekolah -->
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <div class="card-icon">🏫</div>
+                            <h3>Identitas Sekolah</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Nama Sekolah</label>
+                                    <input type="text" class="form-control" id="namaSekolah" placeholder="SMA Negeri 1 Bekasi">
+                                </div>
+                                <div class="form-group">
+                                    <label>NPSN</label>
+                                    <input type="text" class="form-control" id="npsn" placeholder="20254321">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Alamat Lengkap</label>
+                                <textarea class="form-control" id="alamatSekolah" rows="2" placeholder="Jl. Pendidikan No. 1, Bekasi"></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Kota/Kabupaten</label>
+                                    <input type="text" class="form-control" id="kotaSekolah" placeholder="Bekasi">
+                                </div>
+                                <div class="form-group">
+                                    <label>Provinsi</label>
+                                    <input type="text" class="form-control" id="provinsiSekolah" placeholder="Jawa Barat">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Nama Kepala Sekolah</label>
+                                    <input type="text" class="form-control" id="kepalaSekolah" placeholder="Drs. Budi Santoso, M.M.">
+                                </div>
+                                <div class="form-group">
+                                    <label>NIP Kepala Sekolah</label>
+                                    <input type="text" class="form-control" id="nipKepalaSekolah" placeholder="196512151990031002">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Tahun Ajaran & Semester -->
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <div class="card-icon">📅</div>
+                            <h3>Tahun Ajaran & Semester</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Tahun Pelajaran</label>
+                                    <select class="form-control" id="tahunAjaran">
+                                        <option value="2024/2025">2024/2025</option>
+                                        <option value="2025/2026" selected>2025/2026</option>
+                                        <option value="2026/2027">2026/2027</option>
+                                        <option value="2027/2028">2027/2028</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Semester</label>
+                                    <select class="form-control" id="semester">
+                                        <option value="1">Semester 1 (Ganjil)</option>
+                                        <option value="2">Semester 2 (Genap)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>KKM Default</label>
+                                <input type="number" class="form-control" id="kkmDefault" value="75" min="0" max="100">
+                            </div>
+                            <p class="hint">📌 Filter data penilaian berdasarkan tahun ajaran dan semester aktif</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Manajemen Database -->
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <div class="card-icon">💾</div>
+                            <h3>Manajemen Database</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="db-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">Status MongoDB</span>
+                                    <span class="stat-value connected" id="dbStatus">● Terhubung</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Backup Terakhir</span>
+                                    <span class="stat-value" id="lastBackup">Belum pernah</span>
+                                </div>
+                            </div>
+                            <div class="backup-actions">
+                                <button class="btn btn-backup" onclick="backupData()">
+                                    <span class="btn-icon">📦</span>
+                                    <span>Backup Data</span>
+                                </button>
+                                <button class="btn btn-restore" onclick="document.getElementById('restoreFile').click()">
+                                    <span class="btn-icon">📥</span>
+                                    <span>Restore Data</span>
+                                </button>
+                                <input type="file" id="restoreFile" accept=".json" style="display:none" onchange="restoreData(event)">
+                            </div>
+                            <p class="hint">⚠️ Backup data secara berkala untuk keamanan data di IIS lokal</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save Button -->
+                <div class="save-section">
+                    <button class="btn-neon-save" onclick="saveSettings()">
+                        <span class="btn-glow"></span>
+                        <span class="btn-text">💾 Simpan Perubahan</span>
+                    </button>
+                </div>
+
+                <!-- Kelas & Mapel Management -->
+                <div class="management-section">
+                    <div class="glass-card half">
+                        <div class="card-header">
+                            <div class="card-icon">🎓</div>
+                            <h3>Manajemen Kelas</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="add-form">
+                                <input type="text" class="form-control" id="newKelas" placeholder="Nama kelas baru (X IPA 1)">
+                                <button class="btn btn-add" onclick="addKelas()">+ Tambah</button>
+                            </div>
+                            <div class="list-container" id="kelasList"></div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card half">
+                        <div class="card-header">
+                            <div class="card-icon">📖</div>
+                            <h3>Manajemen Mata Pelajaran</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="add-form">
+                                <input type="text" class="form-control" id="newMapel" placeholder="Nama mapel baru">
+                                <button class="btn btn-add" onclick="addMapel()">+ Tambah</button>
+                            </div>
+                            <div class="list-container" id="mapelList"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <style>
+        /* Glassmorphism Cards */
+        .settings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; margin-bottom: 30px; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 30px rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .glass-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(36, 176, 186, 0.2), inset 0 0 30px rgba(255, 255, 255, 0.08); }
+        .glass-card .card-header {
+            padding: 20px 25px;
+            background: linear-gradient(135deg, rgba(36, 176, 186, 0.3), rgba(36, 176, 186, 0.1));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .card-icon { font-size: 32px; filter: drop-shadow(0 0 10px rgba(36, 176, 186, 0.5)); }
+        .glass-card h3 { color: #fff; font-size: 18px; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .glass-card .card-body { padding: 25px; }
+
+        /* Form Styles */
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; color: rgba(255, 255, 255, 0.85); font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+            outline: none;
+        }
+        .form-control::placeholder { color: rgba(255, 255, 255, 0.4); }
+        .form-control:focus { border-color: #24b0ba; background: rgba(36, 176, 186, 0.15); box-shadow: 0 0 20px rgba(36, 176, 186, 0.3); }
+        .form-control option { background: #1a1a2e; color: #fff; }
+        textarea.form-control { resize: vertical; min-height: 60px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .hint { font-size: 12px; color: rgba(255, 255, 255, 0.5); margin-top: 15px; padding: 10px; background: rgba(36, 176, 186, 0.1); border-radius: 8px; border-left: 3px solid #24b0ba; }
+
+        /* Database Stats */
+        .db-stats { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+        .stat-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+        .stat-label { color: rgba(255, 255, 255, 0.7); font-size: 13px; }
+        .stat-value { font-weight: 600; font-size: 13px; }
+        .stat-value.connected { color: #4ade80; }
+        .backup-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+        .btn-backup, .btn-restore {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+        .btn-backup { background: linear-gradient(135deg, #24b0ba, #1a8a93); color: white; }
+        .btn-backup:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(36, 176, 186, 0.4); }
+        .btn-restore { background: rgba(255, 255, 255, 0.1); color: #fff; border: 2px solid rgba(255, 255, 255, 0.2); }
+        .btn-restore:hover { background: rgba(255, 255, 255, 0.15); border-color: #24b0ba; }
+        .btn-icon { font-size: 18px; }
+
+        /* Neon Save Button */
+        .save-section { text-align: center; margin: 40px 0; }
+        .btn-neon-save {
+            position: relative;
+            padding: 18px 50px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            background: linear-gradient(135deg, #24b0ba, #1a8a93);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(36, 176, 186, 0.4), 0 0 40px rgba(36, 176, 186, 0.2), 0 0 60px rgba(36, 176, 186, 0.1);
+        }
+        .btn-neon-save:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 0 30px rgba(36, 176, 186, 0.6), 0 0 60px rgba(36, 176, 186, 0.4), 0 0 90px rgba(36, 176, 186, 0.2), 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        .btn-neon-save:active { transform: translateY(-1px) scale(0.98); }
+        .btn-glow {
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: glowSweep 3s infinite;
+        }
+        @keyframes glowSweep { 0% { left: -100%; } 50%, 100% { left: 100%; } }
+        .btn-text { position: relative; z-index: 1; }
+
+        /* Management Section */
+        .management-section { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 30px; }
+        .glass-card.half { height: fit-content; }
+        .add-form { display: flex; gap: 10px; margin-bottom: 15px; }
+        .add-form .form-control { flex: 1; }
+        .btn-add {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #24b0ba, #1a8a93);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+            white-space: nowrap;
+        }
+        .btn-add:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(36, 176, 186, 0.4); }
+        .list-container { max-height: 250px; overflow-y: auto; }
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        .list-item:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(36, 176, 186, 0.3); }
+        .list-item-text { color: #fff; font-size: 14px; font-weight: 500; }
+        .btn-delete {
+            padding: 6px 12px;
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-delete:hover { background: #ef4444; color: white; }
+
+        /* Message */
+        .message { padding: 15px 20px; border-radius: 12px; margin-bottom: 20px; display: none; font-size: 14px; backdrop-filter: blur(10px); }
+        .message.success { background: rgba(74, 222, 128, 0.2); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); display: block; }
+        .message.error { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); display: block; }
+
+        /* Responsive */
+        @media (max-width: 1200px) { .settings-grid, .management-section { grid-template-columns: 1fr; } }
+        @media (max-width: 992px) {
+            .sidebar { width: 70px; }
+            .sidebar-header h2, .sidebar-header span, .menu-label, .menu-item span { display: none; }
+            .main-content { margin-left: 70px; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; }
+            .form-row { grid-template-columns: 1fr; }
+            .backup-actions { flex-direction: column; }
+        }
+
+        /* Scrollbar */
+        .list-container::-webkit-scrollbar { width: 6px; }
+        .list-container::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 3px; }
+        .list-container::-webkit-scrollbar-thumb { background: rgba(36, 176, 186, 0.5); border-radius: 3px; }
+    </style>

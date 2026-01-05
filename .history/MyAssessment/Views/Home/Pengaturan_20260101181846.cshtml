@@ -1,0 +1,301 @@
+@{
+    ViewData["Title"] = "Pengaturan";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pengaturan - My Assessment K13</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="~/assets/css/style.css" rel="stylesheet" />
+    <style>
+        body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
+        .settings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; margin-bottom: 30px; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .glass-card .card-header {
+            padding: 20px 25px;
+            background: linear-gradient(135deg, rgba(36, 176, 186, 0.3), rgba(36, 176, 186, 0.1));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .card-icon { font-size: 32px; }
+        .glass-card h3 { color: #fff; font-size: 18px; font-weight: 600; }
+        .glass-card .card-body { padding: 25px; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; color: rgba(255, 255, 255, 0.85); font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+        }
+        .form-control::placeholder { color: rgba(255, 255, 255, 0.4); }
+        .form-control:focus { border-color: #24b0ba; background: rgba(36, 176, 186, 0.15); outline: none; }
+        .form-control option { background: #1a1a2e; color: #fff; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .hint { font-size: 12px; color: rgba(255, 255, 255, 0.5); margin-top: 15px; padding: 10px; background: rgba(36, 176, 186, 0.1); border-radius: 8px; border-left: 3px solid #24b0ba; }
+        .save-section { text-align: center; margin: 40px 0; }
+        .btn-neon-save {
+            padding: 18px 50px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            background: linear-gradient(135deg, #24b0ba, #1a8a93);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 0 20px rgba(36, 176, 186, 0.4);
+        }
+        .btn-neon-save:hover { transform: translateY(-3px); box-shadow: 0 0 30px rgba(36, 176, 186, 0.6); }
+        .message { padding: 15px 20px; border-radius: 12px; margin-bottom: 20px; display: none; font-size: 14px; }
+        .message.success { background: rgba(74, 222, 128, 0.2); color: #4ade80; display: block; }
+        .message.error { background: rgba(239, 68, 68, 0.2); color: #ef4444; display: block; }
+        @@media (max-width: 1200px) { .settings-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        @{
+            var currentAction = "Pengaturan";
+        }
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="~/assets/img/logo.png" alt="Logo">
+                <div><h2>MyAssessment</h2><span>Sistem Penilaian K13</span></div>
+            </div>
+            <nav class="sidebar-menu">
+                <div class="menu-label">Menu Utama</div>
+                <a asp-action="Dashboard" class="menu-item"><span class="icon">🏠</span><span>Dashboard</span></a>
+                <a asp-action="DataSiswa" class="menu-item"><span class="icon">👥</span><span>Data Siswa</span></a>
+                <a asp-action="KompetensiDasar" class="menu-item"><span class="icon">📚</span><span>Kompetensi Dasar</span></a>
+                <a asp-action="InputPenilaian" class="menu-item"><span class="icon">📝</span><span>Input Penilaian</span></a>
+                <div class="menu-label">Laporan</div>
+                <a asp-action="RekapNilai" class="menu-item"><span class="icon">📊</span><span>Rekap Nilai</span></a>
+                <a asp-action="CetakRapor" class="menu-item"><span class="icon">📄</span><span>Cetak Rapor</span></a>
+                <div class="menu-label">Pengaturan</div>
+                <a asp-action="Pengaturan" class="menu-item active"><span class="icon">⚙️</span><span>Pengaturan</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <a asp-action="Login" class="logout-btn"><span>🚪</span><span>Logout</span></a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-header">
+                <div class="page-title">
+                    <h1>⚙️ Pengaturan Sistem</h1>
+                    <p>Konfigurasi profil guru, identitas sekolah, dan pengaturan akademik K13</p>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <div class="message" id="message"></div>
+
+                <div class="settings-grid">
+                    <div class="glass-card">
+                        <div class="card-header"><div class="card-icon">👨‍🏫</div><h3>Profil Pengampu</h3></div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Nama Lengkap (dengan Gelar)</label>
+                                <input type="text" class="form-control" id="teacherName" placeholder="Dr. Ahmad Suryadi, M.Pd.">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>NIP</label>
+                                    <input type="text" class="form-control" id="teacherNIP" placeholder="198501012010011001">
+                                </div>
+                                <div class="form-group">
+                                    <label>Mata Pelajaran</label>
+                                    <select class="form-control" id="teacherMapel"></select>
+                                </div>
+                            </div>
+                            <p class="hint">📌 Data ini akan muncul sebagai penandatangan di laporan nilai</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-card">
+                        <div class="card-header"><div class="card-icon">🏫</div><h3>Identitas Sekolah</h3></div>
+                        <div class="card-body">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Nama Sekolah</label>
+                                    <input type="text" class="form-control" id="namaSekolah" placeholder="SMA Negeri 1 Bekasi">
+                                </div>
+                                <div class="form-group">
+                                    <label>NPSN</label>
+                                    <input type="text" class="form-control" id="npsn" placeholder="20254321">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Alamat Lengkap</label>
+                                <textarea class="form-control" id="alamatSekolah" rows="2" placeholder="Jl. Pendidikan No. 1"></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Kota/Kabupaten</label>
+                                    <input type="text" class="form-control" id="kotaSekolah" placeholder="Bekasi">
+                                </div>
+                                <div class="form-group">
+                                    <label>Provinsi</label>
+                                    <input type="text" class="form-control" id="provinsiSekolah" placeholder="Jawa Barat">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Nama Kepala Sekolah</label>
+                                    <input type="text" class="form-control" id="kepalaSekolah" placeholder="Drs. Budi Santoso, M.M.">
+                                </div>
+                                <div class="form-group">
+                                    <label>NIP Kepala Sekolah</label>
+                                    <input type="text" class="form-control" id="nipKepalaSekolah" placeholder="196512151990031002">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card">
+                        <div class="card-header"><div class="card-icon">📅</div><h3>Tahun Ajaran & Semester</h3></div>
+                        <div class="card-body">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Tahun Pelajaran</label>
+                                    <select class="form-control" id="tahunAjaran">
+                                        <option value="2024/2025">2024/2025</option>
+                                        <option value="2025/2026" selected>2025/2026</option>
+                                        <option value="2026/2027">2026/2027</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Semester</label>
+                                    <select class="form-control" id="semester">
+                                        <option value="1">Semester 1 (Ganjil)</option>
+                                        <option value="2">Semester 2 (Genap)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>KKM Default</label>
+                                <input type="number" class="form-control" id="kkmDefault" value="75" min="0" max="100">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card">
+                        <div class="card-header"><div class="card-icon">💾</div><h3>Manajemen Database</h3></div>
+                        <div class="card-body">
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-primary" onclick="backupData()" style="flex: 1;">📦 Backup Data</button>
+                                <button class="btn btn-outline" onclick="document.getElementById('restoreFile').click()" style="flex: 1;">📥 Restore</button>
+                                <input type="file" id="restoreFile" accept=".json" style="display:none">
+                            </div>
+                            <p class="hint">⚠️ Backup data secara berkala untuk keamanan</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="save-section">
+                    <button class="btn-neon-save" onclick="saveSettings()">💾 Simpan Perubahan</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+        let currentSettings = {};
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSettings();
+            loadMapel();
+        });
+
+        async function loadMapel() {
+            const res = await fetch(`${API_URL}/mapel`);
+            const data = await res.json();
+            const select = document.getElementById('teacherMapel');
+            select.innerHTML = '<option value="">Pilih Mapel</option>';
+            data.forEach(m => select.innerHTML += `<option value="${m.nama}">${m.nama}</option>`);
+            if (currentSettings.teacherMapel) select.value = currentSettings.teacherMapel;
+        }
+
+        async function loadSettings() {
+            const res = await fetch(`${API_URL}/settings`);
+            currentSettings = await res.json() || {};
+            
+            document.getElementById('teacherName').value = currentSettings.teacherName || '';
+            document.getElementById('teacherNIP').value = currentSettings.teacherNIP || '';
+            document.getElementById('namaSekolah').value = currentSettings.namaSekolah || '';
+            document.getElementById('npsn').value = currentSettings.npsn || '';
+            document.getElementById('alamatSekolah').value = currentSettings.alamatSekolah || '';
+            document.getElementById('kotaSekolah').value = currentSettings.kotaSekolah || '';
+            document.getElementById('provinsiSekolah').value = currentSettings.provinsiSekolah || '';
+            document.getElementById('kepalaSekolah').value = currentSettings.kepalaSekolah || '';
+            document.getElementById('nipKepalaSekolah').value = currentSettings.nipKepalaSekolah || '';
+            document.getElementById('tahunAjaran').value = currentSettings.tahunAjaran || '2025/2026';
+            document.getElementById('semester').value = currentSettings.semester || '1';
+            document.getElementById('kkmDefault').value = currentSettings.kkmDefault || 75;
+        }
+
+        async function saveSettings() {
+            const settings = {
+                id: currentSettings.id,
+                teacherName: document.getElementById('teacherName').value,
+                teacherNIP: document.getElementById('teacherNIP').value,
+                teacherMapel: document.getElementById('teacherMapel').value,
+                namaSekolah: document.getElementById('namaSekolah').value,
+                npsn: document.getElementById('npsn').value,
+                alamatSekolah: document.getElementById('alamatSekolah').value,
+                kotaSekolah: document.getElementById('kotaSekolah').value,
+                provinsiSekolah: document.getElementById('provinsiSekolah').value,
+                kepalaSekolah: document.getElementById('kepalaSekolah').value,
+                nipKepalaSekolah: document.getElementById('nipKepalaSekolah').value,
+                tahunAjaran: document.getElementById('tahunAjaran').value,
+                semester: document.getElementById('semester').value,
+                kkmDefault: parseInt(document.getElementById('kkmDefault').value) || 75
+            };
+
+            await fetch(`${API_URL}/settings`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(settings)
+            });
+            showMessage('✅ Pengaturan berhasil disimpan!', 'success');
+            loadSettings();
+        }
+
+        async function backupData() {
+            const res = await fetch(`${API_URL}/backup`);
+            const data = await res.json();
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `MyAssessment_Backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            showMessage('✅ Backup berhasil!', 'success');
+        }
+
+        function showMessage(text, type) {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = 'message ' + type;
+            setTimeout(() => msg.className = 'message', 3000);
+        }
+    </script>
+</body>
+</html>

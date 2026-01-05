@@ -1,0 +1,100 @@
+@{
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>@ViewData["Title"] - My Assessment K13</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="~/assets/css/style.css" rel="stylesheet" />
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    <!-- Mobile Header with Hamburger -->
+    <header class="mobile-header">
+        <button class="hamburger-btn" onclick="toggleSidebar()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="mobile-logo">
+            <img src="~/assets/img/logo.png" alt="Logo">
+            <span>MyAssessment</span>
+        </div>
+    </header>
+
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="app-container">
+        <!-- Sidebar - Deep Ocean Drive Theme -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="~/assets/img/logo.png" alt="Logo">
+                <div>
+                    <h2>MyAssessment</h2>
+                    <span>Sistem Penilaian K13</span>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <div class="menu-label">Menu Utama</div>
+                <a asp-controller="Home" asp-action="Dashboard" class="menu-item @(currentAction == "Dashboard" ? "active" : "")">
+                    <span class="icon">🏠</span>
+                    <span>Dashboard</span>
+                </a>
+                <a asp-controller="Home" asp-action="DataSiswa" class="menu-item @(currentAction == "DataSiswa" ? "active" : "")">
+                    <span class="icon">👥</span>
+                    <span>Data Siswa</span>
+                </a>
+                <a asp-controller="Home" asp-action="KompetensiDasar" class="menu-item @(currentAction == "KompetensiDasar" ? "active" : "")">
+                    <span class="icon">📚</span>
+                    <span>Kompetensi Dasar</span>
+                </a>
+                <a asp-controller="Home" asp-action="InputPenilaian" class="menu-item @(currentAction == "InputPenilaian" ? "active" : "")">
+                    <span class="icon">📝</span>
+                    <span>Input Penilaian</span>
+                </a>
+                
+                <div class="menu-label">Laporan</div>
+                <a asp-controller="Home" asp-action="RekapNilai" class="menu-item @(currentAction == "RekapNilai" ? "active" : "")">
+                    <span class="icon">📊</span>
+                    <span>Rekap Nilai</span>
+                </a>
+                <a asp-controller="Home" asp-action="CetakRapor" class="menu-item @(currentAction == "CetakRapor" ? "active" : "")">
+                    <span class="icon">📄</span>
+                    <span>Cetak Rapor</span>
+                </a>
+                
+                <div class="menu-label">Pengaturan</div>
+                <a asp-controller="Home" asp-action="Pengaturan" class="menu-item @(currentAction == "Pengaturan" ? "active" : "")">
+                    <span class="icon">⚙️</span>
+                    <span>Pengaturan</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a asp-controller="Home" asp-action="Login" class="logout-btn" onclick="logout()">
+                    <span>🚪</span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+        
+        function logout() {
+            localStorage.removeItem('userSession');
+            sessionStorage.removeItem('userSession');
+        }
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

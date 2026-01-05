@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Input Penilaian K13 - My Assessment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="assets/css/neon-buttons.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .navbar { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; height: 70px; }
+        .nav-brand { display: flex; align-items: center; font-size: 24px; font-weight: 600; color: #24b0ba; gap: 10px; text-decoration: none; }
+        .nav-menu { display: flex; align-items: center; gap: 30px; }
+        .nav-link { text-decoration: none; color: #333; font-weight: 500; transition: color 0.3s; }
+        .nav-link:hover, .nav-link.active { color: #24b0ba; }
+        .btn-primary { background: linear-gradient(135deg, #24b0ba, #73ced5); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-weight: 500; cursor: pointer; text-decoration: none; }
+        .page-header { background: linear-gradient(135deg, #24b0ba, #73ced5); color: white; padding: 120px 0 60px; margin-top: 70px; text-align: center; }
+        .page-header h1 { font-size: 36px; font-weight: 600; margin-bottom: 10px; }
+        .page-header p { font-size: 18px; opacity: 0.9; }
+        .page-content { padding: 40px 0; min-height: 60vh; }
+        .filter-bar { display: flex; gap: 20px; margin-bottom: 30px; padding: 25px; background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); flex-wrap: wrap; align-items: center; }
+        .filter-group { display: flex; flex-direction: column; gap: 5px; }
+        .filter-group label { font-weight: 500; font-size: 14px; color: #666; }
+        .filter-select { padding: 12px 15px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 14px; min-width: 200px; outline: none; font-family: 'Poppins', sans-serif; }
+        .filter-select:focus { border-color: #24b0ba; }
+        .filter-actions { margin-left: auto; display: flex; gap: 10px; }
+        .btn-export { background: #28a745; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .btn-csv { background: #6c757d; }
+        .grade-container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .grade-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #24b0ba; }
+        .grade-header h3 { font-size: 24px; font-weight: 600; color: #333; }
+        .add-column-btn { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: 500; cursor: pointer; }
+        .grade-table-wrapper { overflow-x: auto; }
+        .grade-table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        .grade-table th, .grade-table td { padding: 12px; text-align: center; border: 1px solid #e9ecef; }
+        .grade-table th { background: #f8f9fa; font-weight: 600; color: #333; }
+        .grade-table th.header-main { background: linear-gradient(135deg, #24b0ba, #73ced5); color: white; }
+        .grade-table td:nth-child(1), .grade-table td:nth-child(2), .grade-table td:nth-child(3) { text-align: left; }
+        .grade-input { width: 70px; padding: 8px; border: 2px solid #e9ecef; border-radius: 5px; text-align: center; font-weight: 500; font-family: 'Poppins', sans-serif; }
+        .grade-input:focus { border-color: #24b0ba; outline: none; }
+        .final-score { background: #e8f5e8; font-weight: 600; }
+        .predicate { font-weight: 600; padding: 5px 15px; border-radius: 15px; color: white; display: inline-block; min-width: 40px; }
+        .predicate.A { background: #28a745; }
+        .predicate.B { background: #17a2b8; }
+        .predicate.C { background: #ffc107; color: #333; }
+        .predicate.D { background: #dc3545; }
+        .save-section { text-align: center; margin-top: 30px; }
+        .btn-save { background: linear-gradient(135deg, #24b0ba, #73ced5); color: white; border: none; padding: 15px 50px; border-radius: 30px; font-weight: 600; font-size: 16px; cursor: pointer; transition: transform 0.3s; }
+        .btn-save:hover { transform: translateY(-2px); }
+        .info-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-left: 4px solid #24b0ba; margin-top: 30px; }
+        .info-card h4 { color: #333; margin-bottom: 15px; font-weight: 600; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .info-grid h5 { color: #24b0ba; margin-bottom: 10px; }
+        .info-grid ul { list-style-type: disc; padding-left: 20px; }
+        .info-grid li { margin-bottom: 5px; color: #666; }
+        .message { padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; display: none; }
+        .message.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; display: block; }
+        .message.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; display: block; }
+        .footer { background: #2c3e50; color: white; padding: 30px 0; text-align: center; margin-top: 60px; }
+        @media (max-width: 768px) {
+            .filter-bar { flex-direction: column; }
+            .filter-select { width: 100%; }
+            .filter-actions { margin-left: 0; width: 100%; justify-content: center; }
+            .nav-menu { display: none; }
+            .info-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">
+                <img src="assets/img/logo.png" alt="MyAssessment Logo" style="height: 40px; width: auto;">
+                <span>MyAssessment</span>
+            </a>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Beranda</a>
+                <a href="siswa.html" class="nav-link">Data Siswa</a>
+                <a href="kompetensi.html" class="nav-link">KD & KKM</a>
+                <a href="penilaian.html" class="nav-link active">Penilaian</a>
+                <a href="pengaturan.html" class="btn-neon btn-neon-primary">Pengaturan</a>
+            </div>
+        </div>
+    </nav>
+    <section class="page-header">
+        <div class="container">
+            <h1>Input Penilaian K13</h1>
+            <p>Kelola penilaian berdasarkan Kompetensi Dasar (KD) untuk KI-3 dan KI-4</p>
+        </div>
+    </section>
+    <section class="page-content">
+        <div class="container">
+            <div class="message" id="message"></div>
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <label>Kelas</label>
+                    <select class="filter-select" id="filterKelas" onchange="loadGradeData()">
+                        <option value="">Pilih Kelas</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Mata Pelajaran</label>
+                    <select class="filter-select" id="filterMapel" onchange="loadGradeData()">
+                        <option value="">Pilih Mata Pelajaran</option>
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn-neon btn-neon-secondary" onclick="exportCSV()">📊 Export CSV</button>
+                </div>
+            </div>
+            <div class="grade-container" id="ki3Container" style="display:none;">
+                <div class="grade-header">
+                    <h3>📚 KI-3 (Pengetahuan)</h3>
+                    <button class="btn-neon btn-neon-success" onclick="addUHColumn()">+ Tambah Kolom UH</button>
+                </div>
+                <div class="grade-table-wrapper">
+                    <table class="grade-table" id="ki3Table">
+                        <thead>
+                            <tr>
+                                <th class="header-main" rowspan="2">No</th>
+                                <th class="header-main" rowspan="2">NISN</th>
+                                <th class="header-main" rowspan="2">Nama Siswa</th>
+                                <th class="header-main" colspan="3" id="uhHeader">Ulangan Harian</th>
+                                <th class="header-main" rowspan="2">Rata-rata UH</th>
+                                <th class="header-main" rowspan="2">PTS</th>
+                                <th class="header-main" rowspan="2">PAS</th>
+                                <th class="header-main" rowspan="2">Nilai Akhir</th>
+                                <th class="header-main" rowspan="2">Predikat</th>
+                            </tr>
+                            <tr id="uhSubHeader"><th>UH 1</th><th>UH 2</th><th>UH 3</th></tr>
+                        </thead>
+                        <tbody id="ki3Body"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="grade-container" id="ki4Container" style="display:none;">
+                <div class="grade-header">
+                    <h3>🔧 KI-4 (Keterampilan)</h3>
+                    <button class="btn-neon btn-neon-success" onclick="addPraktikColumn()">+ Tambah Kolom Praktik</button>
+                </div>
+                <div class="grade-table-wrapper">
+                    <table class="grade-table" id="ki4Table">
+                        <thead>
+                            <tr>
+                                <th class="header-main" rowspan="2">No</th>
+                                <th class="header-main" rowspan="2">NISN</th>
+                                <th class="header-main" rowspan="2">Nama Siswa</th>
+                                <th class="header-main" colspan="2" id="praktikHeader">Praktik</th>
+                                <th class="header-main" rowspan="2">Proyek</th>
+                                <th class="header-main" rowspan="2">Portofolio</th>
+                                <th class="header-main" rowspan="2">Nilai Akhir</th>
+                                <th class="header-main" rowspan="2">Predikat</th>
+                            </tr>
+                            <tr id="praktikSubHeader"><th>P1</th><th>P2</th></tr>
+                        </thead>
+                        <tbody id="ki4Body"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="save-section" id="saveSection" style="display:none;">
+                <button class="btn-save" onclick="saveAllGrades()">💾 Simpan Semua Nilai</button>
+            </div>
+            <div class="info-card">
+                <h4>📋 Petunjuk Penggunaan:</h4>
+                <div class="info-grid">
+                    <div>
+                        <h5>KI-3 (Pengetahuan)</h5>
+                        <ul>
+                            <li>UH (Ulangan Harian): Bobot 40%</li>
+                            <li>PTS (Penilaian Tengah Semester): Bobot 30%</li>
+                            <li>PAS (Penilaian Akhir Semester): Bobot 30%</li>
+                            <li>Nilai diisi dalam rentang 0-100</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5>KI-4 (Keterampilan)</h5>
+                        <ul>
+                            <li>Praktik: Bobot 50%</li>
+                            <li>Proyek: Bobot 25%</li>
+                            <li>Portofolio: Bobot 25%</li>
+                            <li>Predikat: A (≥90), B (80-89), C (≥75), D (&lt;75)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container"><p>© 2026 MyAssessment - Sistem Penilaian Kurikulum 2013</p></div>
+    </footer>
+    <script>
+        const API_URL = '/api';
+        let students = [];
+        let kelasList = [];
+        let mapelList = [];
+        let grades = [];
+        let uhColumnCount = 3;
+        let praktikColumnCount = 2;
+        const KKM = 75;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDropdownOptions();
+        });
+
+        async function loadDropdownOptions() {
+            try {
+                const [kelasRes, mapelRes] = await Promise.all([
+                    fetch(`${API_URL}/kelas`),
+                    fetch(`${API_URL}/mapel`)
+                ]);
+                kelasList = await kelasRes.json();
+                mapelList = await mapelRes.json();
+                
+                const filterKelas = document.getElementById('filterKelas');
+                filterKelas.innerHTML = '<option value="">Pilih Kelas</option>';
+                kelasList.forEach(k => filterKelas.innerHTML += `<option value="${k.nama}">${k.nama}</option>`);
+                
+                const filterMapel = document.getElementById('filterMapel');
+                filterMapel.innerHTML = '<option value="">Pilih Mata Pelajaran</option>';
+                mapelList.forEach(m => filterMapel.innerHTML += `<option value="${m.nama}">${m.nama}</option>`);
+            } catch (err) {
+                console.error('Error loading options:', err);
+            }
+        }
+
+        async function loadGradeData() {
+            const kelas = document.getElementById('filterKelas').value;
+            const mapel = document.getElementById('filterMapel').value;
+            
+            if (!kelas || !mapel) {
+                document.getElementById('ki3Container').style.display = 'none';
+                document.getElementById('ki4Container').style.display = 'none';
+                document.getElementById('saveSection').style.display = 'none';
+                return;
+            }
+            
+            try {
+                const studentsRes = await fetch(`${API_URL}/siswa`);
+                const allStudents = await studentsRes.json();
+                students = allStudents.filter(s => s.kelas === kelas);
+                
+                if (students.length === 0) {
+                    document.getElementById('ki3Container').style.display = 'none';
+                    document.getElementById('ki4Container').style.display = 'none';
+                    document.getElementById('saveSection').style.display = 'none';
+                    showMessage('Tidak ada siswa di kelas ini. Tambahkan siswa terlebih dahulu.', 'error');
+                    return;
+                }
+                
+                const gradesRes = await fetch(`${API_URL}/nilai?kelas=${encodeURIComponent(kelas)}&mapel=${encodeURIComponent(mapel)}`);
+                grades = await gradesRes.json();
+                
+                document.getElementById('ki3Container').style.display = 'block';
+                document.getElementById('ki4Container').style.display = 'block';
+                document.getElementById('saveSection').style.display = 'block';
+                
+                renderKI3Table();
+                renderKI4Table();
+            } catch (err) {
+                console.error('Error loading data:', err);
+                showMessage('Gagal memuat data', 'error');
+            }
+        }
+
+        function renderKI3Table() {
+            const tbody = document.getElementById('ki3Body');
+            tbody.innerHTML = students.map((student, index) => {
+                const grade = grades.find(g => g.studentId === student.id) || {};
+                let uhInputs = '';
+                for (let i = 0; i < uhColumnCount; i++) {
+                    const val = grade.nilaiUH && grade.nilaiUH[i] ? grade.nilaiUH[i] : '';
+                    uhInputs += `<td><input type="number" class="grade-input" id="uh_${student.id}_${i}" value="${val}" min="0" max="100" onchange="calculateKI3('${student.id}')"></td>`;
+                }
+                return `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${student.nisn}</td>
+                        <td>${student.nama}</td>
+                        ${uhInputs}
+                        <td class="final-score" id="avgUH_${student.id}">0</td>
+                        <td><input type="number" class="grade-input" id="pts_${student.id}" value="${grade.nilaiPTS || ''}" min="0" max="100" onchange="calculateKI3('${student.id}')"></td>
+                        <td><input type="number" class="grade-input" id="pas_${student.id}" value="${grade.nilaiPAS || ''}" min="0" max="100" onchange="calculateKI3('${student.id}')"></td>
+                        <td class="final-score" id="finalKI3_${student.id}">0</td>
+                        <td><span class="predicate" id="predicateKI3_${student.id}">-</span></td>
+                    </tr>
+                `;
+            }).join('');
+            document.getElementById('uhHeader').colSpan = uhColumnCount;
+            let subHeaders = '';
+            for (let i = 1; i <= uhColumnCount; i++) subHeaders += `<th>UH ${i}</th>`;
+            document.getElementById('uhSubHeader').innerHTML = subHeaders;
+            students.forEach(s => calculateKI3(s.id));
+        }
+
+        function renderKI4Table() {
+            const tbody = document.getElementById('ki4Body');
+            tbody.innerHTML = students.map((student, index) => {
+                const grade = grades.find(g => g.studentId === student.id) || {};
+                let praktikInputs = '';
+                for (let i = 0; i < praktikColumnCount; i++) {
+                    const val = grade.nilaiPraktik && grade.nilaiPraktik[i] ? grade.nilaiPraktik[i] : '';
+                    praktikInputs += `<td><input type="number" class="grade-input" id="praktik_${student.id}_${i}" value="${val}" min="0" max="100" onchange="calculateKI4('${student.id}')"></td>`;
+                }
+                return `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${student.nisn}</td>
+                        <td>${student.nama}</td>
+                        ${praktikInputs}
+                        <td><input type="number" class="grade-input" id="proyek_${student.id}" value="${grade.nilaiProyek || ''}" min="0" max="100" onchange="calculateKI4('${student.id}')"></td>
+                        <td><input type="number" class="grade-input" id="portofolio_${student.id}" value="${grade.nilaiPortofolio || ''}" min="0" max="100" onchange="calculateKI4('${student.id}')"></td>
+                        <td class="final-score" id="finalKI4_${student.id}">0</td>
+                        <td><span class="predicate" id="predicateKI4_${student.id}">-</span></td>
+                    </tr>
+                `;
+            }).join('');
+            document.getElementById('praktikHeader').colSpan = praktikColumnCount;
+            let subHeaders = '';
+            for (let i = 1; i <= praktikColumnCount; i++) subHeaders += `<th>P${i}</th>`;
+            document.getElementById('praktikSubHeader').innerHTML = subHeaders;
+            students.forEach(s => calculateKI4(s.id));
+        }
+
+        function calculateKI3(studentId) {
+            let uhTotal = 0, uhCount = 0;
+            for (let i = 0; i < uhColumnCount; i++) {
+                const val = parseFloat(document.getElementById(`uh_${studentId}_${i}`).value) || 0;
+                if (val > 0) { uhTotal += val; uhCount++; }
+            }
+            const avgUH = uhCount > 0 ? (uhTotal / uhCount) : 0;
+            document.getElementById(`avgUH_${studentId}`).textContent = avgUH.toFixed(1);
+            const pts = parseFloat(document.getElementById(`pts_${studentId}`).value) || 0;
+            const pas = parseFloat(document.getElementById(`pas_${studentId}`).value) || 0;
+            const finalScore = (avgUH * 0.4) + (pts * 0.3) + (pas * 0.3);
+            document.getElementById(`finalKI3_${studentId}`).textContent = finalScore.toFixed(1);
+            updatePredicate(studentId, finalScore, 'KI3');
+        }
+
+        function calculateKI4(studentId) {
+            let praktikTotal = 0, praktikCount = 0;
+            for (let i = 0; i < praktikColumnCount; i++) {
+                const val = parseFloat(document.getElementById(`praktik_${studentId}_${i}`).value) || 0;
+                if (val > 0) { praktikTotal += val; praktikCount++; }
+            }
+            const avgPraktik = praktikCount > 0 ? (praktikTotal / praktikCount) : 0;
+            const proyek = parseFloat(document.getElementById(`proyek_${studentId}`).value) || 0;
+            const portofolio = parseFloat(document.getElementById(`portofolio_${studentId}`).value) || 0;
+            const finalScore = (avgPraktik * 0.5) + (proyek * 0.25) + (portofolio * 0.25);
+            document.getElementById(`finalKI4_${studentId}`).textContent = finalScore.toFixed(1);
+            updatePredicate(studentId, finalScore, 'KI4');
+        }
+
+        function updatePredicate(studentId, score, type) {
+            let predicate = '-', predicateClass = '';
+            if (score >= 90) { predicate = 'A'; predicateClass = 'A'; }
+            else if (score >= 80) { predicate = 'B'; predicateClass = 'B'; }
+            else if (score >= KKM) { predicate = 'C'; predicateClass = 'C'; }
+            else if (score > 0) { predicate = 'D'; predicateClass = 'D'; }
+            const el = document.getElementById(`predicate${type}_${studentId}`);
+            el.textContent = predicate;
+            el.className = 'predicate ' + predicateClass;
+        }
+
+        function addUHColumn() { uhColumnCount++; renderKI3Table(); }
+        function addPraktikColumn() { praktikColumnCount++; renderKI4Table(); }
+
+        async function saveAllGrades() {
+            const kelas = document.getElementById('filterKelas').value;
+            const mapel = document.getElementById('filterMapel').value;
+            const gradesToSave = [];
+            
+            for (const student of students) {
+                const existingGrade = grades.find(g => g.studentId === student.id);
+                const nilaiUH = [];
+                for (let i = 0; i < uhColumnCount; i++) {
+                    nilaiUH.push(parseFloat(document.getElementById(`uh_${student.id}_${i}`).value) || 0);
+                }
+                const nilaiPraktik = [];
+                for (let i = 0; i < praktikColumnCount; i++) {
+                    nilaiPraktik.push(parseFloat(document.getElementById(`praktik_${student.id}_${i}`).value) || 0);
+                }
+                gradesToSave.push({
+                    id: existingGrade ? existingGrade.id : null,
+                    studentId: student.id,
+                    kelas: kelas,
+                    mapel: mapel,
+                    nilaiUH: nilaiUH,
+                    nilaiPTS: parseFloat(document.getElementById(`pts_${student.id}`).value) || 0,
+                    nilaiPAS: parseFloat(document.getElementById(`pas_${student.id}`).value) || 0,
+                    nilaiPraktik: nilaiPraktik,
+                    nilaiProyek: parseFloat(document.getElementById(`proyek_${student.id}`).value) || 0,
+                    nilaiPortofolio: parseFloat(document.getElementById(`portofolio_${student.id}`).value) || 0,
+                    nilaiAkhirKI3: parseFloat(document.getElementById(`finalKI3_${student.id}`).textContent) || 0,
+                    nilaiAkhirKI4: parseFloat(document.getElementById(`finalKI4_${student.id}`).textContent) || 0,
+                    predikatKI3: document.getElementById(`predicateKI3_${student.id}`).textContent,
+                    predikatKI4: document.getElementById(`predicateKI4_${student.id}`).textContent
+                });
+            }
+            
+            try {
+                const res = await fetch(`${API_URL}/nilai/bulk`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(gradesToSave)
+                });
+                const result = await res.json();
+                showMessage(result.message, 'success');
+                loadGradeData();
+            } catch (err) {
+                showMessage('Gagal menyimpan nilai', 'error');
+            }
+        }
+
+        function exportCSV() {
+            let csv = 'NISN,Nama,Rata-rata UH,PTS,PAS,Nilai Akhir KI-3,Predikat KI-3,Nilai Akhir KI-4,Predikat KI-4\n';
+            students.forEach(student => {
+                const avgUH = document.getElementById(`avgUH_${student.id}`).textContent;
+                const pts = document.getElementById(`pts_${student.id}`).value || 0;
+                const pas = document.getElementById(`pas_${student.id}`).value || 0;
+                const finalKI3 = document.getElementById(`finalKI3_${student.id}`).textContent;
+                const predicateKI3 = document.getElementById(`predicateKI3_${student.id}`).textContent;
+                const finalKI4 = document.getElementById(`finalKI4_${student.id}`).textContent;
+                const predicateKI4 = document.getElementById(`predicateKI4_${student.id}`).textContent;
+                csv += `${student.nisn},${student.nama},${avgUH},${pts},${pas},${finalKI3},${predicateKI3},${finalKI4},${predicateKI4}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'NilaiSiswa.csv';
+            a.click();
+            showMessage('Data berhasil diekspor ke CSV!', 'success');
+        }
+
+        function showMessage(text, type) {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = 'message ' + type;
+            setTimeout(() => { msg.className = 'message'; }, 3000);
+        }
+    </script>
+</body>
+</html>

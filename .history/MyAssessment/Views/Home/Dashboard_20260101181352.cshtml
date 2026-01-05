@@ -1,0 +1,415 @@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+@section Styles {
+<style>
+    /* Dashboard Specific Styles */
+    .welcome-text h1 { font-size: 26px; font-weight: 600; margin-bottom: 5px; }
+    .welcome-text p { font-size: 14px; opacity: 0.9; }
+    
+    .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    .action-card {
+        background: white;
+        border-radius: 14px;
+        padding: 25px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        color: inherit;
+        border: 2px solid transparent;
+    }
+    .action-card:hover {
+        border-color: #24b0ba;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(36,176,186,0.2);
+    }
+    .action-card .icon { font-size: 40px; margin-bottom: 12px; }
+    .action-card h4 { font-size: 15px; font-weight: 600; color: #333; margin-bottom: 5px; }
+    .action-card p { font-size: 12px; color: #888; }
+
+    .grid-2 { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+
+    .activity-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        background: #f0fafb;
+    }
+    .activity-text { flex: 1; }
+    .activity-text h5 { font-size: 14px; font-weight: 500; color: #333; }
+    .activity-text p { font-size: 12px; color: #888; margin-top: 2px; }
+    .activity-time { font-size: 11px; color: #aaa; }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .info-item:last-child { border-bottom: none; }
+    .info-item span { font-size: 13px; color: #666; }
+    .info-item strong { font-size: 13px; color: #333; }
+
+    /* Profile Modal */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .profile-modal {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border-radius: 24px;
+        width: 90%;
+        max-width: 450px;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        scrollbar-width: none;
+    }
+    .profile-modal::-webkit-scrollbar { display: none; }
+    .modal-close {
+        position: absolute;
+        top: 15px; right: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: #fff;
+        font-size: 24px;
+        width: 36px; height: 36px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    .profile-header {
+        text-align: center;
+        padding: 40px 30px 30px;
+        background: linear-gradient(135deg, #24b0ba 0%, #1a8a93 100%);
+        border-radius: 24px 24px 0 0;
+    }
+    .profile-avatar {
+        width: 90px; height: 90px;
+        background: #fff;
+        color: #24b0ba;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        font-weight: 700;
+        margin: 0 auto 15px;
+    }
+    .profile-header h2 { color: #fff; font-size: 22px; }
+    .profile-header p { color: rgba(255, 255, 255, 0.85); font-size: 14px; }
+    .profile-body { padding: 25px 30px; }
+    .profile-section { margin-bottom: 25px; }
+    .profile-section h4 { color: #24b0ba; font-size: 14px; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
+    .profile-item { display: flex; justify-content: space-between; padding: 10px 0; }
+    .profile-item .label { color: rgba(255, 255, 255, 0.6); font-size: 13px; }
+    .profile-item .value { color: #fff; font-size: 13px; font-weight: 500; }
+    .profile-footer { padding: 20px 30px 30px; text-align: center; }
+    .btn-edit-profile {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #24b0ba, #1a8a93);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 50px;
+        font-size: 14px;
+    }
+
+    @@media (max-width: 1200px) { .grid-2 { grid-template-columns: 1fr; } }
+</style>
+}
+
+<!-- Top Header -->
+<div class="top-header">
+    <div class="welcome-text">
+        <h1>👋 Selamat Datang!</h1>
+        <p>Dashboard Sistem Penilaian Kurikulum 2013</p>
+    </div>
+    <div class="user-info" id="userInfo" onclick="showProfile()">
+        <div class="user-avatar" id="userAvatar">G</div>
+        <span class="user-name" id="userName">Guru</span>
+    </div>
+</div>
+
+<!-- Profile Modal -->
+<div class="modal-overlay" id="profileModal" onclick="closeProfileModal(event)">
+    <div class="profile-modal" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeProfile()">&times;</button>
+        <div class="profile-header">
+            <div class="profile-avatar" id="profileAvatar">G</div>
+            <h2 id="profileName">Nama Guru</h2>
+            <p id="profileMapel">Mata Pelajaran</p>
+        </div>
+        <div class="profile-body">
+            <div class="profile-section">
+                <h4>👨‍🏫 Data Pengampu</h4>
+                <div class="profile-item">
+                    <span class="label">NIP</span>
+                    <span class="value" id="profileNIP">-</span>
+                </div>
+                <div class="profile-item">
+                    <span class="label">Mata Pelajaran</span>
+                    <span class="value" id="profileMapelDetail">-</span>
+                </div>
+            </div>
+            <div class="profile-section">
+                <h4>🏫 Sekolah</h4>
+                <div class="profile-item">
+                    <span class="label">Nama Sekolah</span>
+                    <span class="value" id="profileSekolah">-</span>
+                </div>
+                <div class="profile-item">
+                    <span class="label">NPSN</span>
+                    <span class="value" id="profileNPSN">-</span>
+                </div>
+                <div class="profile-item">
+                    <span class="label">Alamat</span>
+                    <span class="value" id="profileAlamat">-</span>
+                </div>
+            </div>
+            <div class="profile-section">
+                <h4>📅 Akademik</h4>
+                <div class="profile-item">
+                    <span class="label">Tahun Ajaran</span>
+                    <span class="value" id="profileTahun">-</span>
+                </div>
+                <div class="profile-item">
+                    <span class="label">Semester</span>
+                    <span class="value" id="profileSemester">-</span>
+                </div>
+            </div>
+        </div>
+        <div class="profile-footer">
+            <a asp-action="Pengaturan" class="btn-edit-profile">⚙️ Edit Pengaturan</a>
+        </div>
+    </div>
+</div>
+
+<!-- Content Area -->
+<div class="content-area">
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon blue">👥</div>
+            <div class="stat-info">
+                <h3 id="totalSiswa">0</h3>
+                <p>Total Siswa</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon green">📚</div>
+            <div class="stat-info">
+                <h3 id="totalKD">0</h3>
+                <p>Kompetensi Dasar</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon orange">🎓</div>
+            <div class="stat-info">
+                <h3 id="totalKelas">0</h3>
+                <p>Kelas Aktif</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon purple">📖</div>
+            <div class="stat-info">
+                <h3 id="totalMapel">0</h3>
+                <p>Mata Pelajaran</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <h2 class="section-title">⚡ Aksi Cepat</h2>
+    <div class="quick-actions">
+        <a asp-action="DataSiswa" class="action-card">
+            <div class="icon">👥</div>
+            <h4>Kelola Siswa</h4>
+            <p>Tambah & edit data siswa</p>
+        </a>
+        <a asp-action="KompetensiDasar" class="action-card">
+            <div class="icon">📚</div>
+            <h4>Kelola KD</h4>
+            <p>Atur kompetensi dasar</p>
+        </a>
+        <a asp-action="InputPenilaian" class="action-card">
+            <div class="icon">📝</div>
+            <h4>Input Nilai</h4>
+            <p>Input nilai siswa</p>
+        </a>
+        <a asp-action="Pengaturan" class="action-card">
+            <div class="icon">⚙️</div>
+            <h4>Pengaturan</h4>
+            <p>Konfigurasi sistem</p>
+        </a>
+    </div>
+
+    <!-- Grid 2 Columns -->
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-header">
+                <h3>📋 Aktivitas Terbaru</h3>
+                <a asp-action="InputPenilaian" class="btn btn-sm btn-primary">Lihat Semua</a>
+            </div>
+            <div class="card-body">
+                <div class="activity-item">
+                    <div class="activity-icon">📝</div>
+                    <div class="activity-text">
+                        <h5>Input nilai KI-3 Matematika</h5>
+                        <p>Kelas X IPA 1 - 30 siswa</p>
+                    </div>
+                    <span class="activity-time">Hari ini</span>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">👥</div>
+                    <div class="activity-text">
+                        <h5>Tambah siswa baru</h5>
+                        <p>5 siswa ditambahkan ke XI IPA 2</p>
+                    </div>
+                    <span class="activity-time">Kemarin</span>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">📚</div>
+                    <div class="activity-text">
+                        <h5>Update KD Bahasa Indonesia</h5>
+                        <p>3 KD baru ditambahkan</p>
+                    </div>
+                    <span class="activity-time">2 hari lalu</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>🏫 Info Sekolah</h3>
+            </div>
+            <div class="card-body">
+                <div class="info-item">
+                    <span>Tahun Ajaran</span>
+                    <strong id="infoTahun">2025/2026</strong>
+                </div>
+                <div class="info-item">
+                    <span>Semester</span>
+                    <strong id="infoSemester">Ganjil</strong>
+                </div>
+                <div class="info-item">
+                    <span>Kurikulum</span>
+                    <strong>K13 Revisi</strong>
+                </div>
+                <div class="info-item">
+                    <span>Status</span>
+                    <strong style="color: #28a745;">● Aktif</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        loadDashboardStats();
+        loadSchoolInfo();
+    });
+
+    async function loadDashboardStats() {
+        try {
+            const [siswaRes, kdRes, kelasRes, mapelRes] = await Promise.all([
+                fetch(`${API_URL}/siswa`),
+                fetch(`${API_URL}/kompetensi`),
+                fetch(`${API_URL}/kelas`),
+                fetch(`${API_URL}/mapel`)
+            ]);
+            
+            document.getElementById('totalSiswa').textContent = (await siswaRes.json()).length;
+            document.getElementById('totalKD').textContent = (await kdRes.json()).length;
+            document.getElementById('totalKelas').textContent = (await kelasRes.json()).length;
+            document.getElementById('totalMapel').textContent = (await mapelRes.json()).length;
+        } catch (err) { console.error('Error loading stats:', err); }
+    }
+
+    async function loadSchoolInfo() {
+        try {
+            const res = await fetch(`${API_URL}/settings`);
+            const data = await res.json();
+            if (data) {
+                document.getElementById('infoTahun').textContent = data.tahunAjaran || '2025/2026';
+                document.getElementById('infoSemester').textContent = data.semester === '2' ? 'Genap' : 'Ganjil';
+                if (data.teacherName) {
+                    const names = data.teacherName.split(' ');
+                    const initials = names.length > 1 ? (names[0][0] + names[names.length-1][0]).toUpperCase() : names[0].substring(0, 2).toUpperCase();
+                    document.getElementById('userAvatar').textContent = initials;
+                    document.getElementById('userName').textContent = data.teacherName;
+                }
+            }
+        } catch (err) { console.error('Error loading school info:', err); }
+    }
+
+    async function showProfile() {
+        try {
+            const res = await fetch(`${API_URL}/settings`);
+            const data = await res.json();
+            if (data) {
+                const teacherName = data.teacherName || 'Nama Guru';
+                const names = teacherName.split(' ');
+                const initials = names.length > 1 ? (names[0][0] + names[names.length-1][0]).toUpperCase() : names[0].substring(0, 2).toUpperCase();
+                
+                document.getElementById('profileAvatar').textContent = initials;
+                document.getElementById('profileName').textContent = teacherName;
+                document.getElementById('profileMapel').textContent = data.teacherMapel || 'Mata Pelajaran';
+                document.getElementById('profileNIP').textContent = data.teacherNIP || '-';
+                document.getElementById('profileMapelDetail').textContent = data.teacherMapel || '-';
+                document.getElementById('profileSekolah').textContent = data.namaSekolah || '-';
+                document.getElementById('profileNPSN').textContent = data.npsn || '-';
+                document.getElementById('profileAlamat').textContent = [data.alamatSekolah, data.kotaSekolah, data.provinsiSekolah].filter(Boolean).join(', ') || '-';
+                document.getElementById('profileTahun').textContent = data.tahunAjaran || '-';
+                document.getElementById('profileSemester').textContent = data.semester === '2' ? 'Genap' : 'Ganjil';
+            }
+            document.getElementById('profileModal').classList.add('active');
+        } catch (err) { console.error('Error loading profile:', err); }
+    }
+
+    function closeProfile() { document.getElementById('profileModal').classList.remove('active'); }
+    function closeProfileModal(event) { if (event.target === event.currentTarget) closeProfile(); }
+</script>
+}

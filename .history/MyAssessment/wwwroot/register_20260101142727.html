@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registrasi Guru - My Assessment K13</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="assets/css/neon-buttons.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #24b0ba 0%, #73ced5 50%, #24b0ba 100%);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            position: relative;
+            overflow: hidden;
+            padding: 20px 0;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Animated Background Circles */
+        .bg-circles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .bg-circles li {
+            position: absolute;
+            display: block;
+            list-style: none;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            animation: animate 25s linear infinite;
+            bottom: -150px;
+            border-radius: 50%;
+        }
+
+        .bg-circles li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
+        .bg-circles li:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
+        .bg-circles li:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
+        .bg-circles li:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; }
+        .bg-circles li:nth-child(5) { left: 65%; width: 20px; height: 20px; animation-delay: 0s; }
+        .bg-circles li:nth-child(6) { left: 75%; width: 110px; height: 110px; animation-delay: 3s; }
+        .bg-circles li:nth-child(7) { left: 35%; width: 150px; height: 150px; animation-delay: 7s; }
+        .bg-circles li:nth-child(8) { left: 50%; width: 25px; height: 25px; animation-delay: 15s; animation-duration: 45s; }
+        .bg-circles li:nth-child(9) { left: 20%; width: 15px; height: 15px; animation-delay: 2s; animation-duration: 35s; }
+        .bg-circles li:nth-child(10) { left: 85%; width: 150px; height: 150px; animation-delay: 0s; animation-duration: 11s; }
+
+        @keyframes animate {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; border-radius: 50%; }
+            100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; border-radius: 50%; }
+        }
+
+        /* Glassmorphism Container */
+        .register-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 40px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                inset 0 0 80px rgba(255, 255, 255, 0.05);
+        }
+
+        /* Logo & Header */
+        .register-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .register-logo {
+            width: 70px;
+            height: 70px;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+        }
+
+        .register-header h1 {
+            color: #fff;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .register-header p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 13px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #fff;
+            font-weight: 500;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper .icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            opacity: 0.7;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 13px 15px 13px 42px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            font-size: 14px;
+            color: #fff;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .form-input:focus {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .form-input.error {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .form-input.valid {
+            border-color: #51cf66;
+            background: rgba(81, 207, 102, 0.1);
+        }
+
+        /* Password Strength */
+        .password-strength {
+            margin-top: 8px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .password-strength-bar.weak { width: 33%; background: #ff6b6b; }
+        .password-strength-bar.medium { width: 66%; background: #ffd43b; }
+        .password-strength-bar.strong { width: 100%; background: #51cf66; }
+
+        .password-hint {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+        }
+
+        /* Terms */
+        .terms-check {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .terms-check input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin-top: 2px;
+            accent-color: #24b0ba;
+            flex-shrink: 0;
+        }
+
+        .terms-check a {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        /* Neon Register Button */
+        .btn-register {
+            width: 100%;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-register::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #24b0ba, #73ced5);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: -1;
+        }
+
+        .btn-register:hover,
+        .btn-register:focus {
+            color: #fff;
+            border-color: #fff;
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff;
+            box-shadow: 
+                0 0 10px #24b0ba,
+                0 0 20px #24b0ba,
+                0 0 40px #24b0ba,
+                0 0 60px #24b0ba;
+        }
+
+        .btn-register:hover::before {
+            opacity: 1;
+        }
+
+        .btn-register:active {
+            transform: scale(0.98);
+        }
+
+        .btn-register:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-register.loading {
+            pointer-events: none;
+        }
+
+        .btn-register.loading::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border: 2px solid transparent;
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        @keyframes spin {
+            to { transform: translateY(-50%) rotate(360deg); }
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 22px 0;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .divider span {
+            padding: 0 12px;
+        }
+
+        /* Login Link */
+        .login-link {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 13px;
+        }
+
+        .login-link a {
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .login-link a:hover {
+            text-shadow: 0 0 10px #fff, 0 0 20px #fff;
+        }
+
+        /* Message */
+        .message {
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .message.error {
+            background: rgba(220, 53, 69, 0.3);
+            border: 1px solid rgba(220, 53, 69, 0.5);
+            color: #fff;
+            display: block;
+        }
+
+        .message.success {
+            background: rgba(40, 167, 69, 0.3);
+            border: 1px solid rgba(40, 167, 69, 0.5);
+            color: #fff;
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .glass-card {
+                padding: 30px 22px;
+            }
+
+            .register-header h1 {
+                font-size: 22px;
+            }
+
+            .btn-register:hover {
+                box-shadow: 
+                    0 0 8px #24b0ba,
+                    0 0 15px #24b0ba;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <ul class="bg-circles">
+        <li></li><li></li><li></li><li></li><li></li>
+        <li></li><li></li><li></li><li></li><li></li>
+    </ul>
+
+    <!-- Register Container -->
+    <div class="register-container">
+        <div class="glass-card">
+            <div class="register-header">
+                <img src="assets/img/logo.png" alt="MyAssessment" class="register-logo">
+                <h1>Daftar Akun Guru</h1>
+                <p>Buat akun untuk mengakses MyAssessment K13</p>
+            </div>
+
+            <div class="message" id="message"></div>
+
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Nama Lengkap</label>
+                    <div class="input-wrapper">
+                        <span class="icon">👤</span>
+                        <input type="text" class="form-input" id="namaLengkap" placeholder="Masukkan nama lengkap" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <div class="input-wrapper">
+                        <span class="icon">📧</span>
+                        <input type="email" class="form-input" id="email" placeholder="Masukkan email aktif" required onblur="validateEmail()">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrapper">
+                        <span class="icon">🔒</span>
+                        <input type="password" class="form-input" id="password" placeholder="Minimal 6 karakter" required oninput="checkPasswordStrength()">
+                    </div>
+                    <div class="password-strength">
+                        <div class="password-strength-bar" id="strengthBar"></div>
+                    </div>
+                    <p class="password-hint" id="passwordHint">Gunakan kombinasi huruf, angka, dan simbol</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Konfirmasi Password</label>
+                    <div class="input-wrapper">
+                        <span class="icon">🔐</span>
+                        <input type="password" class="form-input" id="confirmPassword" placeholder="Ulangi password" required oninput="checkPasswordMatch()">
+                    </div>
+                </div>
+
+                <div class="terms-check">
+                    <input type="checkbox" id="terms" required>
+                    <span>Saya menyetujui <a href="#">Syarat & Ketentuan</a> serta <a href="#">Kebijakan Privasi</a> MyAssessment</span>
+                </div>
+
+                <button type="submit" class="btn-register" id="btnRegister">
+                    ✨ Daftar Sekarang
+                </button>
+            </form>
+
+            <div class="divider"><span>atau</span></div>
+
+            <p class="login-link">
+                Sudah punya akun? <a href="login.html">Masuk di sini</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api/auth';
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('btnRegister');
+            const namaLengkap = document.getElementById('namaLengkap').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const terms = document.getElementById('terms').checked;
+
+            // Validasi
+            if (!namaLengkap || !email || !password) {
+                showMessage('Semua field harus diisi!', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showMessage('Password minimal 6 karakter!', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showMessage('Konfirmasi password tidak cocok!', 'error');
+                return;
+            }
+
+            if (!terms) {
+                showMessage('Anda harus menyetujui syarat & ketentuan!', 'error');
+                return;
+            }
+
+            btn.classList.add('loading');
+            btn.innerHTML = '🔄 Memproses...';
+
+            try {
+                const response = await fetch(`${API_URL}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ namaLengkap, email, password })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showMessage('Registrasi berhasil! Mengalihkan ke halaman login...', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                } else {
+                    showMessage(result.message, 'error');
+                    btn.classList.remove('loading');
+                    btn.innerHTML = '✨ Daftar Sekarang';
+                }
+            } catch (error) {
+                showMessage('Gagal terhubung ke server!', 'error');
+                btn.classList.remove('loading');
+                btn.innerHTML = '✨ Daftar Sekarang';
+            }
+        }
+
+        function validateEmail() {
+            const emailInput = document.getElementById('email');
+            const email = emailInput.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (email && !emailRegex.test(email)) {
+                emailInput.classList.add('error');
+                emailInput.classList.remove('valid');
+            } else if (email) {
+                emailInput.classList.remove('error');
+                emailInput.classList.add('valid');
+            }
+        }
+
+        function checkPasswordStrength() {
+            const password = document.getElementById('password').value;
+            const strengthBar = document.getElementById('strengthBar');
+            const hint = document.getElementById('passwordHint');
+            
+            let strength = 0;
+            
+            if (password.length >= 6) strength++;
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+            strengthBar.className = 'password-strength-bar';
+            
+            if (strength <= 2) {
+                strengthBar.classList.add('weak');
+                hint.textContent = 'Password lemah - tambahkan huruf besar, angka, atau simbol';
+            } else if (strength <= 3) {
+                strengthBar.classList.add('medium');
+                hint.textContent = 'Password cukup kuat';
+            } else {
+                strengthBar.classList.add('strong');
+                hint.textContent = 'Password sangat kuat! ✓';
+            }
+        }
+
+        function checkPasswordMatch() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword');
+            
+            if (confirmPassword.value && confirmPassword.value !== password) {
+                confirmPassword.classList.add('error');
+                confirmPassword.classList.remove('valid');
+            } else if (confirmPassword.value) {
+                confirmPassword.classList.remove('error');
+                confirmPassword.classList.add('valid');
+            }
+        }
+
+        function showMessage(text, type) {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = 'message ' + type;
+        }
+    </script>
+</body>
+</html>

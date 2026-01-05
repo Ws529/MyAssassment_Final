@@ -1,0 +1,659 @@
+@{
+    ViewData["Title"] = "Mata Pelajaran";
+}
+
+@section Styles {
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+    .page-title h1 {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+    }
+    .page-title p {
+        color: var(--text-secondary);
+        margin: 4px 0 0;
+        font-size: 14px;
+    }
+    .btn-add {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: linear-gradient(135deg, var(--neon-cyan), var(--accent-teal));
+        color: #0d1b2a;
+        border: none;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px var(--neon-cyan-glow);
+        text-shadow: none;
+    }
+    .btn-add:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px var(--neon-cyan-glow);
+        color: #0d1b2a;
+    }
+    .btn-add span {
+        color: #0d1b2a;
+    }
+
+    /* Stats Cards */
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    .stat-mini {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .stat-mini .icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+    }
+    .stat-mini .icon.cyan { background: linear-gradient(135deg, rgba(0,212,170,0.2), rgba(0,188,212,0.2)); }
+    .stat-mini .icon.purple { background: linear-gradient(135deg, rgba(138,43,226,0.2), rgba(147,112,219,0.2)); }
+    .stat-mini .icon.orange { background: linear-gradient(135deg, rgba(255,165,0,0.2), rgba(255,140,0,0.2)); }
+    .stat-mini h3 {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--neon-cyan);
+        margin: 0;
+    }
+    .stat-mini p {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin: 0;
+    }
+
+    /* Table Container */
+    .table-container {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        overflow: hidden;
+    }
+    .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--glass-border);
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+    .table-header h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0;
+    }
+    .search-box {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid var(--glass-border);
+        border-radius: 10px;
+        padding: 8px 16px;
+    }
+    .search-box input {
+        background: transparent;
+        border: none;
+        color: var(--text-primary);
+        font-size: 14px;
+        width: 200px;
+        outline: none;
+    }
+    .search-box input::placeholder { color: var(--text-muted); }
+
+    /* Table */
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .data-table th {
+        background: rgba(0,212,170,0.1);
+        padding: 16px 20px;
+        text-align: left;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--neon-cyan);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .data-table td {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--glass-border);
+        color: var(--text-primary);
+        font-size: 14px;
+    }
+    .data-table tbody tr {
+        transition: all 0.3s ease;
+    }
+    .data-table tbody tr:hover {
+        background: rgba(0,212,170,0.05);
+    }
+    .data-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Badge Kelompok */
+    .badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    .badge-a { background: rgba(0,212,170,0.2); color: var(--neon-cyan); }
+    .badge-b { background: rgba(138,43,226,0.2); color: #9370db; }
+    .badge-c { background: rgba(255,165,0,0.2); color: #ffa500; }
+
+    /* KKM Badge */
+    .kkm-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, rgba(0,212,170,0.2), rgba(0,188,212,0.1));
+        color: var(--neon-cyan);
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    /* Action Buttons */
+    .action-btns {
+        display: flex;
+        gap: 8px;
+    }
+    .btn-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+    .btn-edit {
+        background: rgba(0,212,170,0.15);
+        color: var(--neon-cyan);
+        border: 1px solid rgba(0,212,170,0.3);
+    }
+    .btn-edit:hover {
+        background: var(--neon-cyan);
+        color: var(--primary-dark);
+    }
+    .btn-delete {
+        background: rgba(255,71,87,0.15);
+        color: var(--neon-red);
+        border: 1px solid rgba(255,71,87,0.3);
+    }
+    .btn-delete:hover {
+        background: var(--neon-red);
+        color: #fff;
+    }
+
+    /* Modal */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(13,27,42,0.9);
+        backdrop-filter: blur(10px);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+        background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark));
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        width: 90%;
+        max-width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+        animation: modalSlideIn 0.3s ease;
+    }
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px;
+        border-bottom: 1px solid var(--glass-border);
+    }
+    .modal-header h3 {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0;
+    }
+    .modal-close {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255,71,87,0.15);
+        border: 1px solid rgba(255,71,87,0.3);
+        color: var(--neon-red);
+        font-size: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    .modal-close:hover {
+        background: var(--neon-red);
+        color: #fff;
+    }
+    .modal-body { padding: 24px; }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group label {
+        display: block;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+    }
+    .form-control {
+        width: 100%;
+        padding: 14px 16px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        color: var(--text-primary);
+        font-size: 14px;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+    }
+    .form-control:focus {
+        outline: none;
+        border-color: var(--neon-cyan);
+        box-shadow: 0 0 0 3px var(--neon-cyan-glow);
+    }
+    .form-control option {
+        background: var(--primary-dark);
+        color: var(--text-primary);
+    }
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        padding: 20px 24px;
+        border-top: 1px solid var(--glass-border);
+    }
+    .btn-cancel {
+        padding: 12px 24px;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        color: var(--text-secondary);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .btn-cancel:hover {
+        background: rgba(255,255,255,0.15);
+        color: var(--text-primary);
+    }
+    .btn-save {
+        padding: 12px 24px;
+        background: linear-gradient(135deg, var(--neon-cyan), var(--accent-teal));
+        border: none;
+        border-radius: 12px;
+        color: var(--primary-dark);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .btn-save:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px var(--neon-cyan-glow);
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+    .empty-state .icon {
+        font-size: 64px;
+        margin-bottom: 16px;
+    }
+    .empty-state h4 {
+        font-size: 18px;
+        color: var(--text-primary);
+        margin: 0 0 8px;
+    }
+    .empty-state p {
+        color: var(--text-secondary);
+        font-size: 14px;
+        margin: 0;
+    }
+
+    @@keyframes modalSlideIn {
+        from { opacity: 0; transform: translateY(-30px) scale(0.95); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @@media (max-width: 768px) {
+        .form-row { grid-template-columns: 1fr; }
+        .data-table th:nth-child(2),
+        .data-table td:nth-child(2) { display: none; }
+    }
+</style>
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-title">
+        <h1>📚 Mata Pelajaran</h1>
+        <p>Kelola daftar mata pelajaran dan KKM</p>
+    </div>
+    <button class="btn-add" onclick="openModal()">
+        <span>➕</span> Tambah Mapel
+    </button>
+</div>
+
+<!-- Stats Row -->
+<div class="stats-row">
+    <div class="stat-mini">
+        <div class="icon cyan">📚</div>
+        <div>
+            <h3 id="totalMapel">0</h3>
+            <p>Total Mapel</p>
+        </div>
+    </div>
+    <div class="stat-mini">
+        <div class="icon purple">🅰️</div>
+        <div>
+            <h3 id="kelompokA">0</h3>
+            <p>Kelompok A</p>
+        </div>
+    </div>
+    <div class="stat-mini">
+        <div class="icon orange">🅱️</div>
+        <div>
+            <h3 id="kelompokB">0</h3>
+            <p>Kelompok B</p>
+        </div>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="table-container">
+    <div class="table-header">
+        <h3>📋 Daftar Mata Pelajaran</h3>
+        <div class="search-box">
+            <span>🔍</span>
+            <input type="text" id="searchInput" placeholder="Cari mapel..." oninput="filterMapel()">
+        </div>
+    </div>
+    <div id="tableBody">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Kode</th>
+                    <th>Nama Mata Pelajaran</th>
+                    <th>Kelompok</th>
+                    <th>KKM</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="mapelTableBody">
+                <tr>
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <div class="icon">⏳</div>
+                            <h4>Memuat data...</h4>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Tambah/Edit -->
+<div class="modal-overlay" id="mapelModal" onclick="closeModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3 id="modalTitle">Tambah Mata Pelajaran</h3>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="mapelId">
+            <div class="form-group">
+                <label>Nama Mata Pelajaran *</label>
+                <input type="text" class="form-control" id="namaMapel" placeholder="Contoh: Matematika">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Kode Mapel *</label>
+                    <input type="text" class="form-control" id="kodeMapel" placeholder="Contoh: MTK">
+                </div>
+                <div class="form-group">
+                    <label>KKM</label>
+                    <input type="number" class="form-control" id="kkmMapel" value="75" min="0" max="100">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Kelompok Mapel</label>
+                <select class="form-control" id="kelompokMapel">
+                    <option value="A">Kelompok A (Wajib)</option>
+                    <option value="B">Kelompok B (Wajib)</option>
+                    <option value="C">Kelompok C (Peminatan)</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" onclick="closeModal()">Batal</button>
+            <button class="btn-save" onclick="saveMapel()">💾 Simpan</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let mapelData = [];
+
+    document.addEventListener('DOMContentLoaded', loadMapel);
+
+    async function loadMapel() {
+        try {
+            const res = await fetch(`${API_URL}/mapel`);
+            mapelData = await res.json();
+            renderTable(mapelData);
+            updateStats();
+        } catch (err) {
+            console.error('Error loading mapel:', err);
+            showEmpty('Gagal memuat data');
+        }
+    }
+
+    function renderTable(data) {
+        const tbody = document.getElementById('mapelTableBody');
+        
+        if (!data || data.length === 0) {
+            showEmpty('Belum ada data mata pelajaran');
+            return;
+        }
+
+        tbody.innerHTML = data.map((m, i) => `
+            <tr>
+                <td>${i + 1}</td>
+                <td><code style="background:rgba(0,212,170,0.1);padding:4px 8px;border-radius:6px;color:var(--neon-cyan)">${m.kode || '-'}</code></td>
+                <td><strong>${m.nama}</strong></td>
+                <td><span class="badge badge-${(m.kelompok || 'A').toLowerCase()}">${m.kelompok || 'A'}</span></td>
+                <td><span class="kkm-badge">${m.kkm || 75}</span></td>
+                <td>
+                    <div class="action-btns">
+                        <button class="btn-icon btn-edit" onclick="editMapel('${m.id}')" title="Edit">✏️</button>
+                        <button class="btn-icon btn-delete" onclick="deleteMapel('${m.id}', '${m.nama}')" title="Hapus">🗑️</button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function showEmpty(message) {
+        document.getElementById('mapelTableBody').innerHTML = `
+            <tr>
+                <td colspan="6">
+                    <div class="empty-state">
+                        <div class="icon">📚</div>
+                        <h4>${message}</h4>
+                        <p>Klik tombol "Tambah Mapel" untuk menambahkan data baru</p>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
+
+    function updateStats() {
+        document.getElementById('totalMapel').textContent = mapelData.length;
+        document.getElementById('kelompokA').textContent = mapelData.filter(m => (m.kelompok || 'A') === 'A').length;
+        document.getElementById('kelompokB').textContent = mapelData.filter(m => m.kelompok === 'B').length;
+    }
+
+    function filterMapel() {
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        const filtered = mapelData.filter(m => 
+            m.nama.toLowerCase().includes(search) || 
+            (m.kode && m.kode.toLowerCase().includes(search))
+        );
+        renderTable(filtered);
+    }
+
+    function openModal(id = null) {
+        document.getElementById('mapelId').value = '';
+        document.getElementById('namaMapel').value = '';
+        document.getElementById('kodeMapel').value = '';
+        document.getElementById('kkmMapel').value = '75';
+        document.getElementById('kelompokMapel').value = 'A';
+        document.getElementById('modalTitle').textContent = 'Tambah Mata Pelajaran';
+        document.getElementById('mapelModal').classList.add('active');
+    }
+
+    function closeModal(event) {
+        if (!event || event.target === event.currentTarget) {
+            document.getElementById('mapelModal').classList.remove('active');
+        }
+    }
+
+    function editMapel(id) {
+        const mapel = mapelData.find(m => m.id === id);
+        if (!mapel) return;
+
+        document.getElementById('mapelId').value = mapel.id;
+        document.getElementById('namaMapel').value = mapel.nama;
+        document.getElementById('kodeMapel').value = mapel.kode || '';
+        document.getElementById('kkmMapel').value = mapel.kkm || 75;
+        document.getElementById('kelompokMapel').value = mapel.kelompok || 'A';
+        document.getElementById('modalTitle').textContent = 'Edit Mata Pelajaran';
+        document.getElementById('mapelModal').classList.add('active');
+    }
+
+    async function saveMapel() {
+        const id = document.getElementById('mapelId').value;
+        const nama = document.getElementById('namaMapel').value.trim();
+        const kode = document.getElementById('kodeMapel').value.trim();
+        const kkm = parseInt(document.getElementById('kkmMapel').value) || 75;
+        const kelompok = document.getElementById('kelompokMapel').value;
+
+        if (!nama || !kode) {
+            alert('Nama dan Kode Mapel wajib diisi!');
+            return;
+        }
+
+        const payload = { nama, kode, kkm, kelompok };
+
+        try {
+            const url = id ? `${API_URL}/mapel/${id}` : `${API_URL}/mapel`;
+            const method = id ? 'PUT' : 'POST';
+
+            const res = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await res.json();
+
+            if (res.ok && result.success) {
+                closeModal();
+                loadMapel();
+                alert(result.message);
+            } else {
+                alert(result.message || 'Gagal menyimpan data');
+            }
+        } catch (err) {
+            console.error('Error saving mapel:', err);
+            alert('Terjadi kesalahan saat menyimpan data');
+        }
+    }
+
+    async function deleteMapel(id, nama) {
+        if (!confirm(`Yakin ingin menghapus mata pelajaran "${nama}"?`)) return;
+
+        try {
+            const res = await fetch(`${API_URL}/mapel/${id}`, { method: 'DELETE' });
+            const result = await res.json();
+
+            if (res.ok && result.success) {
+                loadMapel();
+                alert(result.message);
+            } else {
+                alert(result.message || 'Gagal menghapus data');
+            }
+        } catch (err) {
+            console.error('Error deleting mapel:', err);
+            alert('Terjadi kesalahan saat menghapus data');
+        }
+    }
+</script>
+}

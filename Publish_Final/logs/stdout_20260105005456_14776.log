@@ -1,0 +1,14 @@
+?? Database already has 70 KD records. Skipping seed.
+?? Database already has 69 student records. Skipping seed.
+Aplikasi siap! Akses aplikasi lewat salah satu alamat berikut:
+ - http://100.86.68.13:8000
+ - http://10.10.26.91:8000
+Jika menggunakan HP, coba buka http://100.86.68.13:8000
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: C:\MyAssassment\Publish_Final
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...

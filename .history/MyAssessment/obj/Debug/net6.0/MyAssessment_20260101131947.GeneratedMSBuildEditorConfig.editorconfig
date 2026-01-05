@@ -1,0 +1,231 @@
+is_global = true
+build_property.TargetFramework = net6.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = MyAssessment_20260101131947
+build_property.RootNamespace = MyAssessment_20260101131947
+build_property.ProjectDir = C:\MyAssassment\.history\MyAssessment\
+build_property.RazorLangVersion = 6.0
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\MyAssassment\.history\MyAssessment
+build_property._RazorSourceGeneratorDebug = 
+
+[c:/MyAssassment/.history/MyAssessment/Pages/Index_20260101000046.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXhfMjAyNjAxMDEwMDAwNDYuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Pages/Index_20260101000155.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXhfMjAyNjAxMDEwMDAxNTUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/CetakRapor_20260101181646.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxDZXRha1JhcG9yXzIwMjYwMTAxMTgxNjQ2LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/CetakRapor_20260101181718.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxDZXRha1JhcG9yXzIwMjYwMTAxMTgxNzE4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/CetakRapor_20260103010620.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxDZXRha1JhcG9yXzIwMjYwMTAzMDEwNjIwLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/Dashboard_20260101181239.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXNoYm9hcmRfMjAyNjAxMDExODEyMzkuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/Dashboard_20260101181352.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXNoYm9hcmRfMjAyNjAxMDExODEzNTIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/Dashboard_20260103010315.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXNoYm9hcmRfMjAyNjAxMDMwMTAzMTUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/Dashboard_20260103011723.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXNoYm9hcmRfMjAyNjAxMDMwMTE3MjMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/Dashboard_20260103011736.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXNoYm9hcmRfMjAyNjAxMDMwMTE3MzYuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/Dashboard_20260103012143.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXNoYm9hcmRfMjAyNjAxMDMwMTIxNDMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/Dashboard_20260103012231.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXNoYm9hcmRfMjAyNjAxMDMwMTIyMzEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/DataSiswa_20260101181403.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXRhU2lzd2FfMjAyNjAxMDExODE0MDMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/DataSiswa_20260101181435.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXRhU2lzd2FfMjAyNjAxMDExODE0MzUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/DataSiswa_20260103000806.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXRhU2lzd2FfMjAyNjAxMDMwMDA4MDYuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/DataSiswa_20260103000821.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXRhU2lzd2FfMjAyNjAxMDMwMDA4MjEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/DataSiswa_20260103000832.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXRhU2lzd2FfMjAyNjAxMDMwMDA4MzIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/DataSiswa_20260103000844.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXRhU2lzd2FfMjAyNjAxMDMwMDA4NDQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/DataSiswa_20260103000853.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXRhU2lzd2FfMjAyNjAxMDMwMDA4NTMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/DataSiswa_20260103003358.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXRhU2lzd2FfMjAyNjAxMDMwMDMzNTguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/DataSiswa_20260103004336.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXRhU2lzd2FfMjAyNjAxMDMwMDQzMzYuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/DataSiswa_20260103004758.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXRhU2lzd2FfMjAyNjAxMDMwMDQ3NTguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/DataSiswa_20260103005114.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXRhU2lzd2FfMjAyNjAxMDMwMDUxMTQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/DataSiswa_20260103005446.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXRhU2lzd2FfMjAyNjAxMDMwMDU0NDYuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/DataSiswa_20260103005510.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXRhU2lzd2FfMjAyNjAxMDMwMDU1MTAuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/InputPenilaian_20260101181526.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbnB1dFBlbmlsYWlhbl8yMDI2MDEwMTE4MTUyNi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/InputPenilaian_20260101181608.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbnB1dFBlbmlsYWlhbl8yMDI2MDEwMTE4MTYwOC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/KompetensiDasar_20260101181443.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxLb21wZXRlbnNpRGFzYXJfMjAyNjAxMDExODE0NDMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/KompetensiDasar_20260101181518.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxLb21wZXRlbnNpRGFzYXJfMjAyNjAxMDExODE1MTguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/KompetensiDasar_20260103010422.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxLb21wZXRlbnNpRGFzYXJfMjAyNjAxMDMwMTA0MjIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/Login_20260101181854.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxMb2dpbl8yMDI2MDEwMTE4MTg1NC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/Login_20260101181914.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxMb2dpbl8yMDI2MDEwMTE4MTkxNC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/Mapel_20260103013334.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxNYXBlbF8yMDI2MDEwMzAxMzMzNC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/Mapel_20260103013518.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxNYXBlbF8yMDI2MDEwMzAxMzUxOC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/Mapel_20260103014026.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxNYXBlbF8yMDI2MDEwMzAxNDAyNi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/Mapel_20260103014430.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxNYXBlbF8yMDI2MDEwMzAxNDQzMC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/Pengaturan_20260101181725.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQZW5nYXR1cmFuXzIwMjYwMTAxMTgxNzI1LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/Pengaturan_20260101181846.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQZW5nYXR1cmFuXzIwMjYwMTAxMTgxODQ2LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/Register_20260101181920.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxSZWdpc3Rlcl8yMDI2MDEwMTE4MTkyMC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/Register_20260101181939.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxSZWdpc3Rlcl8yMDI2MDEwMTE4MTkzOS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/RekapNilai_20260101181616.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxSZWthcE5pbGFpXzIwMjYwMTAxMTgxNjE2LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/RekapNilai_20260101181639.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxSZWthcE5pbGFpXzIwMjYwMTAxMTgxNjM5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Home/RekapNilai_20260103010512.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxSZWthcE5pbGFpXzIwMjYwMTAzMDEwNTEyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Shared/_Layout_20260101181114.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRfMjAyNjAxMDExODExMTQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Shared/_Layout_20260101181128.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRfMjAyNjAxMDExODExMjguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Shared/_Layout_20260101185531.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRfMjAyNjAxMDExODU1MzEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Shared/_Layout_20260101185541.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRfMjAyNjAxMDExODU1NDEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Shared/_Layout_20260103010203.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRfMjAyNjAxMDMwMTAyMDMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Shared/_Layout_20260103013535.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRfMjAyNjAxMDMwMTM1MzUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/Shared/_Layout_20260103014101.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRfMjAyNjAxMDMwMTQxMDEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/_ViewImports_20260101181106.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzXzIwMjYwMTAxMTgxMTA2LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/_ViewImports_20260101181108.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzXzIwMjYwMTAxMTgxMTA4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/_ViewStart_20260101181100.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydF8yMDI2MDEwMTE4MTEwMC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/MyAssassment/.history/MyAssessment/Views/_ViewStart_20260101181102.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydF8yMDI2MDEwMTE4MTEwMi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 

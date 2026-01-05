@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cetak Rapor - My Assessment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #f0f2f5; }
+        .app-container { display: flex; min-height: 100vh; }
+
+        /* Sidebar - Deep Ocean Drive Theme */
+        .sidebar { width: 260px; background: linear-gradient(180deg, #24b0ba 0%, #156d73 60%, #0d2c2e 100%); color: #e2e8f0; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; border-right: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3); }
+        .sidebar-header { padding: 25px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.1); }
+        .sidebar-header img { width: 45px; height: 45px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .sidebar-header h2 { font-size: 20px; font-weight: 700; color: #fff; }
+        .sidebar-header span { font-size: 11px; color: rgba(255,255,255,0.8); display: block; margin-top: 2px; }
+        .sidebar-menu { padding: 20px 0; }
+        .menu-label { padding: 15px 20px 8px; font-size: 10px; text-transform: uppercase; color: rgba(255,255,255,0.5); letter-spacing: 2px; font-weight: 600; }
+        .menu-item { display: flex; align-items: center; gap: 14px; padding: 14px 20px; color: #e2e8f0; text-decoration: none; transition: all 0.3s ease; border-left: 4px solid transparent; margin: 2px 8px 2px 0; border-radius: 0 25px 25px 0; }
+        .menu-item:hover { background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+        .menu-item.active { background: rgba(255, 255, 255, 0.15); border-left-color: #ffffff; color: #ffffff; text-shadow: 0 0 10px #ffffff; }
+        .menu-item .icon { font-size: 20px; width: 28px; text-align: center; }
+        .sidebar-footer { position: absolute; bottom: 0; width: 100%; padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); }
+        .logout-btn { display: flex; align-items: center; gap: 12px; color: #fca5a5; text-decoration: none; font-size: 14px; font-weight: 500; padding: 12px 15px; border-radius: 10px; }
+        .logout-btn:hover { background: rgba(255,100,100,0.2); }
+
+        /* Main Content */
+        .main-content { flex: 1; margin-left: 260px; min-height: 100vh; }
+        .top-header { background: linear-gradient(135deg, #24b0ba, #1a8a93); color: white; padding: 25px 30px; }
+        .page-title h1 { font-size: 24px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .page-title p { font-size: 13px; opacity: 0.9; margin-top: 5px; }
+        .content-area { padding: 25px 30px; }
+
+        /* Filter Bar */
+        .filter-bar { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end; }
+        .filter-group { display: flex; flex-direction: column; gap: 5px; }
+        .filter-group label { font-size: 12px; font-weight: 500; color: #666; }
+        .filter-select { padding: 10px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; min-width: 180px; outline: none; font-family: 'Poppins', sans-serif; }
+
+        /* Cards */
+        .card { background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow: hidden; margin-bottom: 20px; }
+        .card-header { padding: 15px 20px; border-bottom: 1px solid #eee; }
+        .card-header h3 { font-size: 16px; font-weight: 600; color: #333; }
+        .card-body { padding: 20px; }
+
+        /* Student List */
+        .student-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+        .student-card { background: #f8f9fa; border: 2px solid #e0e0e0; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; }
+        .student-card:hover { border-color: #24b0ba; background: #f0fafb; }
+        .student-card.selected { border-color: #24b0ba; background: #e8f7f8; box-shadow: 0 0 0 3px rgba(36,176,186,0.2); }
+        .student-card h4 { font-size: 15px; font-weight: 600; color: #333; margin-bottom: 5px; }
+        .student-card p { font-size: 12px; color: #666; }
+        .student-card .check { float: right; font-size: 20px; color: #24b0ba; display: none; }
+        .student-card.selected .check { display: block; }
+
+        /* Buttons */
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.3s; font-family: 'Poppins', sans-serif; }
+        .btn-primary { background: linear-gradient(135deg, #24b0ba, #1a8a93); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(36,176,186,0.4); }
+        .btn-success { background: #28a745; color: white; }
+        .btn-outline { background: transparent; border: 2px solid #24b0ba; color: #24b0ba; }
+        .btn-lg { padding: 15px 30px; font-size: 16px; }
+
+        /* Action Buttons */
+        .action-buttons { display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
+
+        /* Print Preview */
+        .print-preview { display: none; }
+
+        .empty-state { text-align: center; padding: 50px 20px; color: #888; }
+        .empty-state .icon { font-size: 48px; margin-bottom: 15px; }
+
+        /* Print Styles */
+        @media print {
+            .sidebar, .top-header, .filter-bar, .action-buttons { display: none !important; }
+            .main-content { margin-left: 0 !important; }
+            .card { box-shadow: none; border: 1px solid #ddd; }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar { width: 70px; }
+            .sidebar-header h2, .sidebar-header span, .menu-label, .menu-item span { display: none; }
+            .main-content { margin-left: 70px; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="assets/img/logo.png" alt="Logo">
+                <div><h2>MyAssessment</h2><span>Sistem Penilaian K13</span></div>
+            </div>
+            <nav class="sidebar-menu">
+                <div class="menu-label">Menu Utama</div>
+                <a href="index.html" class="menu-item"><span class="icon">🏠</span><span>Dashboard</span></a>
+                <a href="siswa.html" class="menu-item"><span class="icon">👥</span><span>Data Siswa</span></a>
+                <a href="kompetensi.html" class="menu-item"><span class="icon">📚</span><span>Kompetensi Dasar</span></a>
+                <a href="penilaian.html" class="menu-item"><span class="icon">📝</span><span>Input Penilaian</span></a>
+                <div class="menu-label">Laporan</div>
+                <a href="rekap.html" class="menu-item"><span class="icon">📊</span><span>Rekap Nilai</span></a>
+                <a href="rapor.html" class="menu-item active"><span class="icon">📄</span><span>Cetak Rapor</span></a>
+                <div class="menu-label">Pengaturan</div>
+                <a href="pengaturan.html" class="menu-item"><span class="icon">⚙️</span><span>Pengaturan</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="login.html" class="logout-btn" onclick="logout()"><span>🚪</span><span>Logout</span></a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-header">
+                <div class="page-title">
+                    <h1>📄 Cetak Rapor</h1>
+                    <p>Generate dan cetak rapor siswa dengan deskripsi naratif otomatis</p>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <!-- Filter Bar -->
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <label>Kelas</label>
+                        <select class="filter-select" id="filterKelas" onchange="loadStudents()">
+                            <option value="">Pilih Kelas</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Semester</label>
+                        <select class="filter-select" id="filterSemester">
+                            <option value="1">Semester 1 (Ganjil)</option>
+                            <option value="2">Semester 2 (Genap)</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>&nbsp;</label>
+                        <button class="btn btn-primary" onclick="loadStudents()">🔍 Tampilkan Siswa</button>
+                    </div>
+                </div>
+
+                <!-- Student Selection -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>👥 Pilih Siswa untuk Cetak Rapor</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="margin-bottom: 15px;">
+                            <button class="btn btn-outline" onclick="selectAll()">✅ Pilih Semua</button>
+                            <button class="btn btn-outline" onclick="deselectAll()">❌ Batal Pilih</button>
+                            <span style="margin-left: 15px; color: #666;" id="selectedCount">0 siswa dipilih</span>
+                        </div>
+                        <div class="student-grid" id="studentGrid">
+                            <div class="empty-state">
+                                <div class="icon">👥</div>
+                                <h4>Pilih kelas terlebih dahulu</h4>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary btn-lg" onclick="printRapor()">🖨️ Cetak Rapor</button>
+                            <button class="btn btn-success btn-lg" onclick="downloadRapor()">📥 Download PDF</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rapor Preview -->
+                <div class="card" id="raporPreview" style="display: none;">
+                    <div class="card-header">
+                        <h3>📋 Preview Rapor</h3>
+                    </div>
+                    <div class="card-body" id="raporContent">
+                        <!-- Rapor content will be generated here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+        let students = [];
+        let selectedStudents = new Set();
+        let schoolInfo = {};
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFilters();
+            loadSchoolInfo();
+        });
+
+        async function loadFilters() {
+            try {
+                const kelasRes = await fetch(`${API_URL}/kelas`);
+                const kelasList = await kelasRes.json();
+                const filterKelas = document.getElementById('filterKelas');
+                filterKelas.innerHTML = '<option value="">Pilih Kelas</option>';
+                kelasList.forEach(k => filterKelas.innerHTML += `<option value="${k.nama}">${k.nama}</option>`);
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadSchoolInfo() {
+            try {
+                const res = await fetch(`${API_URL}/settings`);
+                schoolInfo = await res.json() || {};
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadStudents() {
+            const kelas = document.getElementById('filterKelas').value;
+            if (!kelas) return;
+
+            try {
+                const res = await fetch(`${API_URL}/siswa`);
+                students = (await res.json()).filter(s => s.kelas === kelas);
+                renderStudents();
+            } catch (err) { console.error(err); }
+        }
+
+        function renderStudents() {
+            const grid = document.getElementById('studentGrid');
+            
+            if (students.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><div class="icon">👥</div><h4>Tidak ada siswa di kelas ini</h4></div>';
+                return;
+            }
+
+            grid.innerHTML = students.map(s => `
+                <div class="student-card ${selectedStudents.has(s.id) ? 'selected' : ''}" onclick="toggleStudent('${s.id}')">
+                    <span class="check">✓</span>
+                    <h4>${s.nama}</h4>
+                    <p>NISN: ${s.nisn} | ${s.gender === 'Laki-laki' ? 'L' : 'P'}</p>
+                </div>
+            `).join('');
+
+            updateSelectedCount();
+        }
+
+        function toggleStudent(id) {
+            if (selectedStudents.has(id)) {
+                selectedStudents.delete(id);
+            } else {
+                selectedStudents.add(id);
+            }
+            renderStudents();
+        }
+
+        function selectAll() {
+            students.forEach(s => selectedStudents.add(s.id));
+            renderStudents();
+        }
+
+        function deselectAll() {
+            selectedStudents.clear();
+            renderStudents();
+        }
+
+        function updateSelectedCount() {
+            document.getElementById('selectedCount').textContent = `${selectedStudents.size} siswa dipilih`;
+        }
+
+        async function printRapor() {
+            if (selectedStudents.size === 0) {
+                alert('Pilih minimal 1 siswa untuk cetak rapor!');
+                return;
+            }
+
+            await generateRaporPreview();
+            window.print();
+        }
+
+        async function downloadRapor() {
+            if (selectedStudents.size === 0) {
+                alert('Pilih minimal 1 siswa untuk download rapor!');
+                return;
+            }
+
+            await generateRaporPreview();
+            alert('Fitur download PDF akan segera tersedia. Gunakan Print to PDF dari browser untuk sementara.');
+        }
+
+        async function generateRaporPreview() {
+            const gradesRes = await fetch(`${API_URL}/nilai`);
+            const allGrades = await gradesRes.json();
+
+            const kdRes = await fetch(`${API_URL}/kompetensi`);
+            const allKD = await kdRes.json();
+
+            const kelas = document.getElementById('filterKelas').value;
+            const semester = document.getElementById('filterSemester').value;
+            const kkm = 75;
+
+            let raporHTML = '';
+
+            for (const studentId of selectedStudents) {
+                const student = students.find(s => s.id === studentId);
+                if (!student) continue;
+
+                const studentGrades = allGrades.filter(g => g.studentId === studentId);
+
+                // Calculate averages
+                let ki3Vals = [], ki4Vals = [];
+                studentGrades.forEach(g => {
+                    if (g.uh1) ki3Vals.push(g.uh1);
+                    if (g.uh2) ki3Vals.push(g.uh2);
+                    if (g.uh3) ki3Vals.push(g.uh3);
+                    if (g.pts) ki3Vals.push(g.pts);
+                    if (g.pas) ki3Vals.push(g.pas);
+                    if (g.praktik) ki4Vals.push(g.praktik);
+                    if (g.proyek) ki4Vals.push(g.proyek);
+                    if (g.portofolio) ki4Vals.push(g.portofolio);
+                });
+
+                const ki3Avg = ki3Vals.length ? (ki3Vals.reduce((a,b) => a+b, 0) / ki3Vals.length).toFixed(0) : '-';
+                const ki4Avg = ki4Vals.length ? (ki4Vals.reduce((a,b) => a+b, 0) / ki4Vals.length).toFixed(0) : '-';
+                const totalAvg = [...ki3Vals, ...ki4Vals].length ? 
+                    (([...ki3Vals, ...ki4Vals].reduce((a,b) => a+b, 0)) / [...ki3Vals, ...ki4Vals].length).toFixed(0) : 0;
+
+                const predikat = totalAvg >= 90 ? 'A (Sangat Baik)' : totalAvg >= 80 ? 'B (Baik)' : totalAvg >= kkm ? 'C (Cukup)' : 'D (Perlu Bimbingan)';
+
+                // Generate description
+                const desc = generateDescription(student.nama, totalAvg, kkm);
+
+                raporHTML += `
+                    <div style="page-break-after: always; padding: 20px; border: 2px solid #333; margin-bottom: 20px;">
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <h2 style="margin: 0;">LAPORAN HASIL BELAJAR PESERTA DIDIK</h2>
+                            <h3 style="margin: 5px 0;">${schoolInfo.namaSekolah || 'Nama Sekolah'}</h3>
+                            <p style="margin: 0;">Tahun Pelajaran ${schoolInfo.tahunAjaran || '2025/2026'} - Semester ${semester === '1' ? 'Ganjil' : 'Genap'}</p>
+                        </div>
+                        
+                        <table style="width: 100%; margin-bottom: 20px; font-size: 14px;">
+                            <tr><td width="150">Nama Peserta Didik</td><td>: <strong>${student.nama}</strong></td></tr>
+                            <tr><td>NISN</td><td>: ${student.nisn}</td></tr>
+                            <tr><td>Kelas</td><td>: ${kelas}</td></tr>
+                        </table>
+
+                        <h4 style="background: #24b0ba; color: white; padding: 8px 15px; margin: 15px 0 10px;">A. NILAI AKADEMIK</h4>
+                        <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                            <tr style="background: #f0f0f0;">
+                                <th style="border: 1px solid #333; padding: 8px;">Aspek</th>
+                                <th style="border: 1px solid #333; padding: 8px;">Nilai</th>
+                                <th style="border: 1px solid #333; padding: 8px;">Predikat</th>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #333; padding: 8px;">KI-3 (Pengetahuan)</td>
+                                <td style="border: 1px solid #333; padding: 8px; text-align: center;"><strong>${ki3Avg}</strong></td>
+                                <td style="border: 1px solid #333; padding: 8px; text-align: center;">${ki3Avg >= 90 ? 'A' : ki3Avg >= 80 ? 'B' : ki3Avg >= kkm ? 'C' : 'D'}</td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #333; padding: 8px;">KI-4 (Keterampilan)</td>
+                                <td style="border: 1px solid #333; padding: 8px; text-align: center;"><strong>${ki4Avg}</strong></td>
+                                <td style="border: 1px solid #333; padding: 8px; text-align: center;">${ki4Avg >= 90 ? 'A' : ki4Avg >= 80 ? 'B' : ki4Avg >= kkm ? 'C' : 'D'}</td>
+                            </tr>
+                            <tr style="background: #e8f7f8;">
+                                <td style="border: 1px solid #333; padding: 8px;"><strong>Rata-rata</strong></td>
+                                <td style="border: 1px solid #333; padding: 8px; text-align: center;"><strong>${totalAvg}</strong></td>
+                                <td style="border: 1px solid #333; padding: 8px; text-align: center;"><strong>${predikat.split(' ')[0]}</strong></td>
+                            </tr>
+                        </table>
+
+                        <h4 style="background: #24b0ba; color: white; padding: 8px 15px; margin: 20px 0 10px;">B. DESKRIPSI</h4>
+                        <p style="text-align: justify; line-height: 1.8; padding: 10px; background: #f9f9f9; border-radius: 5px;">${desc}</p>
+
+                        <div style="margin-top: 30px; display: flex; justify-content: space-between;">
+                            <div style="text-align: center;">
+                                <p>Orang Tua/Wali</p>
+                                <br><br><br>
+                                <p>(_________________)</p>
+                            </div>
+                            <div style="text-align: center;">
+                                <p>${schoolInfo.alamatSekolah || 'Kota'}, ____________</p>
+                                <p>Wali Kelas</p>
+                                <br><br><br>
+                                <p>(_________________)</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('raporContent').innerHTML = raporHTML;
+            document.getElementById('raporPreview').style.display = 'block';
+        }
+
+        function generateDescription(nama, nilai, kkm) {
+            const firstName = nama.split(' ')[0];
+            
+            if (nilai >= 90) {
+                return `${firstName} menunjukkan pencapaian yang sangat baik dalam pembelajaran. Peserta didik mampu menguasai seluruh kompetensi dasar dengan sangat baik dan konsisten menunjukkan sikap positif dalam belajar. Diharapkan dapat mempertahankan prestasi dan menjadi teladan bagi teman-temannya.`;
+            } else if (nilai >= 80) {
+                return `${firstName} menunjukkan pencapaian yang baik dalam pembelajaran. Peserta didik mampu menguasai sebagian besar kompetensi dasar dengan baik. Diharapkan dapat terus meningkatkan kemampuan dan lebih aktif dalam kegiatan pembelajaran.`;
+            } else if (nilai >= kkm) {
+                return `${firstName} menunjukkan pencapaian yang cukup dalam pembelajaran. Peserta didik mampu menguasai kompetensi dasar sesuai dengan standar minimal. Diharapkan dapat lebih giat belajar untuk meningkatkan pemahaman dan keterampilan.`;
+            } else {
+                return `${firstName} masih perlu bimbingan lebih lanjut dalam pembelajaran. Peserta didik belum sepenuhnya menguasai kompetensi dasar yang ditetapkan. Diharapkan dapat mengikuti program remedial dan lebih fokus dalam belajar dengan bimbingan guru dan orang tua.`;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('userSession');
+            sessionStorage.removeItem('userSession');
+        }
+    </script>
+</body>
+</html>
